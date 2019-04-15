@@ -124,7 +124,39 @@ object Functions extends App {
   // when we call callByName, ` System.nanoTime() ` Expression is passed literally as is. That expression is evaluated every time.
   // '=>' parameter delays the evaluation of the expression passed as parameter
 
+  /*
+  Default Args
+   */
 
+  // Let's take the example of Tail Recursive Factorial
+
+  def tailRecursivefactorial(x: Int, accumulator: Int): Int = {
+    if (x <=1 ) return accumulator
+    else tailRecursivefactorial(x - 1, x * accumulator)
+  }
+
+  // Call tailRecursivefactorial(5, 1)
+
+  // When we call this method, value of accumulator is always 1. Basically ` accumulator ` is polluting our method signature.
+
+  // One way out is to wrap it into a function accepting only `x` (Which we did in ` betterFactorial `)
+
+  // Another way is to provide default values to some parameters. e.g.
+
+  def tailRecursivefactorialDefaultParam(x: Int, accumulator: Int = 1): Int = {
+    if (x <=1 ) return accumulator
+    else tailRecursivefactorial(x - 1, x * accumulator)
+  }
+
+  // Call tailRecursivefactorialDefaultParam(5)
+
+  // If we have following function
+
+  def savePic(format : String = "jpg", width: Int = 1920, height: Int = 1080) = print("Saving Picture")
+
+  // If we want to pass only width then we have only two options
+  // 1. Pass all the leading arguments e.g. savePic("bmp", 800)
+  // 2. name the arguments e.g. savePic(width = 800)
 
 
 
