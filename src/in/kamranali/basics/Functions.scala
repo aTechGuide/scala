@@ -53,7 +53,7 @@ object Functions extends App {
     else fibonacci(n - 1) + fibonacci(n - 2)
   }
 
-  print(fibonacci(8))
+  // print(fibonacci(8))
 
   /*
   Tail Recursion
@@ -102,7 +102,27 @@ object Functions extends App {
   // in `x * factorial(x - 1)` it needs to calculate intermediary step `factorial(x - 1)`
   // and then multiple it with `x`
 
-  //
+  /*
+  Call by Value VS Call by Name
+   */
+
+  def callByValue(x: Long): Unit = {
+    println("By value: " + x)
+    println("By value: " + x)
+  }
+
+  def callByName(x: => Long): Unit = {
+    println("By Name: " + x)
+    println("By Name: " + x)
+  }
+
+  callByValue(System.nanoTime())
+  callByName(System.nanoTime())
+
+  // When we call callByValue, Value of ` System.nanoTime() ` is computed before the function evaluates and same value is used in function definition.
+
+  // when we call callByName, ` System.nanoTime() ` Expression is passed literally as is. That expression is evaluated every time.
+  // '=>' parameter delays the evaluation of the expression passed as parameter
 
 
 
