@@ -24,7 +24,7 @@ object ObjectBasics extends App {
   val mary = Person
   val john = Person
 
-  println(mary == john)
+  println("mary == john: " + (mary == john).toString)
 
   /*
   COMPANIONS:
@@ -58,7 +58,4 @@ object ObjectBasics extends App {
   /*
   Scala Applications i.e. ` App `: It is a scala object with ` def main(args: Array[String]): Unit `
    */
-
-
-
 }

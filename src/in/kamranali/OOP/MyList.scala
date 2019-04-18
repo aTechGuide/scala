@@ -29,7 +29,7 @@ abstract class MyList[+A] { // Covariant List
   def ++[B >: A](list: MyList[B]): MyList[B]
 }
 
-object Empty extends MyList[Nothing] { // Because Nothing is a proper substitute of any type.
+case object Empty extends MyList[Nothing] { // Because Nothing is a proper substitute of any type.
 
   def head: Nothing = throw new NoSuchElementException
   def tail: MyList[Nothing] = throw new NoSuchElementException
@@ -50,7 +50,7 @@ object Empty extends MyList[Nothing] { // Because Nothing is a proper substitute
 
 }
 
-class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
+case class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
 
   def head: A = h
   def tail: MyList[A] = t
