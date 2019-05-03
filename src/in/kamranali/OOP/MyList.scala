@@ -88,9 +88,17 @@ object ListTest extends App {
     override def apply(element: Int): Int = element * 2
   }).toString)
 
+  // Lambda Way
+  //println(listOfIntegers.map(a => a*2).toString)
+  //println(listOfIntegers.map(_ * 2).toString)
+
   println(listOfIntegers.filter(new Function1[Int, Boolean] {
     override def apply(element: Int): Boolean = element % 2 == 0
   }).toString)
+
+  // Lambda Way
+  //println(listOfIntegers.filter(elem => elem % 2 == 0).toString)
+  // println(listOfIntegers.filter(_ % 2 == 0).toString)
 
   println(listOfIntegers ++ anotherListOfIntegers)
 
@@ -99,4 +107,6 @@ object ListTest extends App {
       new Cons(element, new Cons(element + 1, Empty))
     }
   }).toString)
+
+  // println(listOfIntegers.flatMap(element => new Cons(element, new Cons(element + 1, Empty))).toString)
 }
