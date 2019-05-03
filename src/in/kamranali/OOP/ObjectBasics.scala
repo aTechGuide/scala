@@ -18,7 +18,12 @@ object ObjectBasics extends App {
 
  /*
  Scala Object is singleton instance.
- when we say ` object Person { } ` we define its type + its only instance
+ when we say
+ ` object Person {
+                 ...
+                 } `
+
+  we define its type + its only instance
   */
 
   val mary = Person
