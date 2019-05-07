@@ -23,6 +23,7 @@ abstract class MyList[+A] { // Covariant List
   def map[B](transformer: A => B): MyList[B]
   def flatMap[B](transformer: A => MyList[B]): MyList[B]
   def filter(predicate: A => Boolean): MyList[A]
+
   def foreach(f: A => Unit): Unit
   def sort(compare: (A, A) => Int): MyList[A]
   def zipWith[B, C](list: MyList[B], zip: (A, B) => C): MyList[C]
@@ -154,4 +155,17 @@ object ListTest extends App {
   println(anotherListOfIntegers.zipWith[String, String](listOfStrings, _ + "-" + _))
 
   println(listOfIntegers.fold(0)(_ + _))
+
+  /*
+  Testing Comprehensions:
+
+  It will work for our list because we have used the same method signatures for map, flatMap and filter
+   */
+
+  val forCombinations = for {
+    n <- listOfIntegers
+    s <- listOfStrings
+  } yield n + "-" + s
+
+  println(forCombinations)
 }
