@@ -3,6 +3,11 @@ package in.kamranali.OOP
 object Basics extends App {
 
   /*
+  Scala is more object oriented than Canonical object oriented languages like Java, C++
+  because everything (every single code) in scala is either inside class or Object oe in package object
+   */
+
+  /*
   Basic Class
    */
   val cat = new Animal

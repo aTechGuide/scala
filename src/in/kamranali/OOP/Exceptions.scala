@@ -6,7 +6,7 @@ object Exceptions extends App {
   Throwing Exceptions
    */
   // val aWeirdValue = throw new NullPointerException // <- an expression which throw NPE
-  // aWeirdValue is `Nothing`
+  // aWeirdValue has `Nothing` Type.
 
   // throwable classes extend the Throwable class
   // Exception (something went wrong with program) and Error (something wrong with system) are major Throwable subTypes

@@ -13,8 +13,8 @@ object ObjectBasics extends App {
     def canFly: Boolean = false
   }
 
-  println(Person.EYES)
-  println(Person.canFly)
+  println("Person Eyes: " + Person.EYES)
+  println("Person Can Fly: " + Person.canFly)
 
  /*
  Scala Object is singleton instance.

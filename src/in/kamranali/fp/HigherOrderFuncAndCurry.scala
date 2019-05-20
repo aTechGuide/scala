@@ -50,10 +50,10 @@ object HigherOrderFuncAndCurry extends App {
 
   /*
   Function with multiple parameter list
-  This function will act like curied Functions
+  This function will act like curried Functions
    */
 
-  def curriedFormatter(c: String)(x: Double): String = c.format(x )
+  def curriedFormatter(c: String)(x: Double): String = c.format(x)
 
   // Let's create Sub-Functions from curriedFormatter
   // 'standardFormat' is a function from Double to String
