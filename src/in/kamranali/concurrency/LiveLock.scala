@@ -11,10 +11,9 @@ object LiveLock extends App {
 
     def pass(other: Friend) = {
       while (this.side == other.side) {
-        val thisSide = this.side
-        val otherSide = other.side
 
-        println(s"$this: oh, but please, $other, feel free to pass ... (this.side = $thisSide and other.side = $otherSide)")
+        println(s"$this: oh, but please, $other, feel free to pass ... (this.side = ${this.side} and other.side = ${other.side})")
+        println(s"$this has started switching side")
         switchSide()
         println(s"$this has switched side")
         Thread.sleep(1000)
