@@ -6,7 +6,8 @@ object Functions extends App {
 
   /*
   Simple Function
-  1. Compiler can infer the return type of Function
+  1. Compiler can infer the return type of Function by looking at implementation
+  CAVEAT: For recursive functions, compiler can't figure out the return type
    */
   def aFunc(a: String, b: Int): String = a + " " + b
 
@@ -19,7 +20,7 @@ object Functions extends App {
   def aFuncWithSideEffects(a: String): Unit = print(a)
 
   /*
-  Parameterless Functions
+  Parameter less Functions
    */
   def parameterLessFunction(): Int = 42
 
