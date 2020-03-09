@@ -13,6 +13,9 @@ object CaseClasses extends App {
   7. Have extractor patterns i.e. Case Classes can be used in Pattern Matching
   8. We also have `case object` similar to `case class` which acts like a case class except its an object.
      It has all the properties of case class except pt.5 (because they themselves are companion object)
+
+  Good Practice
+  1. Always make case class final else its implemented equals and hashCode will create trouble. e.g. Keeping the subclass object in Hash Map
    */
   case class Person(name: String, age: Int)
 
@@ -29,6 +32,7 @@ object CaseClasses extends App {
   println(kamran3)
 
   val thePerson = Person // `Person` is a companion object of case class
+  println(Person)
   val marry = Person("Marry", 23) // Same as ` Person.apply("Marry", 23) `.The companion object `Person` comes with apply() factory method
   // So companions method apply() method does the same thing as constructor
 

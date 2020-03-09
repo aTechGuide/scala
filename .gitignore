@@ -3,3 +3,6 @@ scala.iml
 out/*
 
 Testing.scala
+target/*
+project/target/*
+

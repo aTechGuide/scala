@@ -4,7 +4,7 @@ object Basics extends App {
 
   /*
   Scala is more object oriented than Canonical object oriented languages like Java, C++
-  because everything (every single code) in scala is either inside class or Object oe in package object
+  because everything (every single code) in scala is either inside class or Object or in package object
    */
 
   /*
