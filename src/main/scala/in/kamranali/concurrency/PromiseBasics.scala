@@ -38,7 +38,8 @@ object PromiseBasics extends App {
   Thread.sleep(1000)
 
   /*
-    Future-Promise paradigm is powerful as it separates the concern of reading/handling futures and writing to a promise while eliminating concurrency issues almost completely
+    Future-Promise paradigm is powerful as it separates the concern of reading/handling futures and writing to a promise
+    while eliminating concurrency issues almost completely
    */
 
 

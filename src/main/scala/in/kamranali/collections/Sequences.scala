@@ -50,7 +50,9 @@ object Sequences extends App {
   val vector = Vector(1,2,3)
   println(vector)
 
-  // vectors vs lists
+  /**
+   * vectors vs lists
+   */
 
   val maxRuns = 1000
   val maxCapacity = 1000000
