@@ -2,15 +2,18 @@ package in.kamranali.concurrency
 
 import java.util.concurrent.Executors
 
+/**
+  * [Concurrency] Chapter 1: Basics
+  */
 object Basics extends App {
 
-  val aThread = new Thread(new Runnable {
-    override def run(): Unit = println("Running in Parallel")
-  })
+  val aThread = new Thread(() => println("Running in Parallel"))
 
-  // Gives a Signal to JVM to start a JVM  Thread => Creating a JVM Thread which runs on top of OS Thread
-
-  // JVM thread will invoke the `run` method
+  /**
+  Starting a Thread by `aThread.start()` actually create a JVM Thread which runs on top of OS Thread
+    `aThread.start()` => gives the signal to the JVM to start an JVM  Thread which runs on top of OS thread
+    JVM makes the JVM thead invokes the run() method of Runnable Interface
+    */
   aThread.start()
 
   aThread.join() // <- This call will block until the thread has finished running
@@ -24,10 +27,9 @@ object Basics extends App {
 
   // Different runs in multi threaded environment produces different results.
 
-
-  /*
-  Executors
-  - Threads are expensive to start and kill. Solution is to reuse them
+  /**
+    Executors
+    - Threads are expensive to start and kill. Solution is to reuse them
    */
 
   val pool = Executors.newFixedThreadPool(10)
@@ -47,7 +49,7 @@ object Basics extends App {
   })
 
   //pool.shutdown()
-  //pool.execute(() => println("should not appear")) // <- Throw an exception in the calling thread
+  //pool.execute(() => println("should not appear")) // <- Throws an exception in the calling thread. As Thread pool does NOT accept any more actions
   // println(pool.isShutdown) // <- Returns true
 
   //pool.shutdownNow() // <- If actions are executing on this thread pool. Then both of the actions will throw an exception

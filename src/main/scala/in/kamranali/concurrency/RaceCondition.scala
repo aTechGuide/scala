@@ -1,9 +1,12 @@
 package in.kamranali.concurrency
 
+/**
+  * [Concurrency] Chapter 2: Concurrency Problems
+  */
 object RaceCondition extends App {
 
   // Race Condition
-  def runInParallel = {
+  def runInParallel(): Unit = {
     var x = 0
 
     val thread1 = new Thread(() => x = 1)
@@ -39,31 +42,31 @@ object RaceCondition extends App {
 
     if (account.amount != 43000) println("BUG !!" + account.amount)
 
-    /*
-    If both thread sees same value
-    thread1: 50000
-      - account = 50000 - 3000 = 47000
+    /**
+      If both thread sees same value
+      thread1: 50000
+        - account = 50000 - 3000 = 47000
 
-    thread2: 50000
-      - account = 50000 - 4000 = 46000 <- This thread overwrites the memory of account.amount. We have a BUG
+      thread2: 50000
+        - account = 50000 - 4000 = 46000 <- This thread overwrites the memory of account.amount. We have a BUG
      */
   }
 
-  /*
-  Solution
+  /**
+    Solution
 
-  1. use synchronized on critical path
+  Option 1. use synchronized on critical path
       - Only AnyRefs can have synchronized blocks
       - Make no assumption about who gets the lock first
       - keep locking to minimum (for performance)
       - maintain thread safety at ALL times in parallel application
 
-  2. use @volatile
-      volatile on var or var means all READ/WRITE to it are synchronized
+  Option 2. use @volatile
+      - volatile on var or var means all READ/WRITE to it are synchronized
    */
 
-  // use synchronized
-  def buySafe(account: BankAccount, thing: String, price: Int) = {
+  // Option 1. Using synchronized
+  def buySafe(account: BankAccount, thing: String, price: Int): Unit = {
     account.synchronized {
       // no two threads can evaluate this at same time
       account.amount -= price
@@ -73,47 +76,67 @@ object RaceCondition extends App {
     }
   }
 
-  // use @volatile
+  // Option 2: Using @volatile
   class BankAccountSafe(@volatile var amount: Int) {
     override def toString: String = "" + amount
   }
 
-  /*
-  Exercise 1
+  /**
+    Exercise 1
 
-  Print in reverse value of thread
+    Construct 50 "inception" threads
+        Thread1 -> thread2 -> thread3 -> ...
+        println("hello from thread #3")
+      in REVERSE ORDER
+
    */
-  def inceptionThreads(maxThreads: Int, index: Int = 1): Thread  = new Thread(() => {
-    if (index < maxThreads) {
-      val newThread = inceptionThreads(maxThreads, index + 1)
-      newThread.start()
-      newThread.join()
-    }
-    println(s"Hello from thread $index")
-  })
+  def inceptionThreads(maxThreads: Int, index: Int = 1): Thread  =
+    new Thread(() => {
+      if (index < maxThreads) {
+        val newThread = inceptionThreads(maxThreads, index + 1)
+        newThread.start()
+        newThread.join()
+      }
+
+      // New threads are created and joined before current thread gets chance to print the message
+      println(s"Hello from thread $index")
+    })
 
   inceptionThreads(10).start()
 
 
-  /*
-  Exercise 2
-  - Biggest value possible for x in threads = 100 (when all the increments are perfect)
-  - Smallest value possible for x in threads = 1 (when all the threads read sane value = 0)
+  /**
+    Exercise 2
+    - what's the biggest value possible for x in threads
+    - what's the smallest value possible for x in threads
 
    */
 
   var x = 0
   val threads = (1 to 100).map(_ => new Thread(() => x += 1))
+  threads.foreach(_.start())
+  threads.foreach(_.join())
+  println(s"x = $x")
+
 
   /*
-  sleep fallacy
-  - Value of message is almost always be "Scala is awesome"
-  - But it is not guaranteed
+    Solution
+    - Biggest value possible for x in threads = 100 (when all the increments are perfect)
+    - Smallest value possible for x in threads = 1 (when all the threads read same value = 0)
+   */
+
+  /**
+    Exercise 3
+
+    what's the value of message in following code?
+    is it guaranteed?
+    why? why not?
+
    */
   var message = ""
   val awesomeThread = new Thread(() => {
     Thread.sleep(1000)
-    message = "Scala is awesone"
+    message = "Scala is awesome"
   })
 
   message = "Scala sucks"
@@ -121,8 +144,55 @@ object RaceCondition extends App {
   Thread.sleep(2000)
   println(message)
 
-  // Sleep doesn't guarantee execution sequence / ordering of evaluation
+  /*
+  Solution
 
-  // The only way to solve it is through `join` NOT Synchronization
+  what's the value of message? almost always "Scala is awesome"
+    is it guaranteed? NO!
+    why? why not?
+
+    "sleep fallacy" (A very wrong programming practice of synchronizing threads by putting them to sleep)
+    Remember => Sleep doesn't guarantee execution sequence / ordering of evaluation
+
+    So the answer to above questions are
+    - Value of message is almost always be "Scala is awesome"
+    - But it is not guaranteed
+   */
+  /*
+    One probable sequence of execution
+      (main thread)
+        message = "Scala sucks"
+        awesomeThread.start()
+        sleep() - relieves execution
+      (awesome thread)
+        sleep() - relieves execution
+      (OS gives the CPU to some important thread - takes CPU for more than 2 seconds)
+      (OS gives the CPU back to the MAIN thread)
+        println("Scala sucks")
+      (OS gives the CPU to awesomethread)
+        message = "Scala is awesome"
+   */
+
+  /*
+    The only way to solve it is through `join` NOT Synchronization
+      As Synchronization is ONLY useful for concurrent modifications
+   */
+
+  /*
+    Solution
+   */
+
+  var message1 = ""
+  val awesomeThread1 = new Thread(() => {
+    Thread.sleep(1000)
+    message = "Scala is awesome"
+  })
+
+  message1 = "Scala sucks"
+  awesomeThread1.start()
+  Thread.sleep(2000)
+
+  awesomeThread1.join() // Solution line [Wait for awesome thread to join]
+  println(message1)
 
 }
