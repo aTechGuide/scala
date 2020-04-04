@@ -13,57 +13,63 @@ object OptionsBasics extends App {
   val myFirstOption: Option[Int] = Some(4)
   val noOption: Option[Int] = None
 
-  println(myFirstOption)
-  println(noOption)
+  println(myFirstOption) // Some(4)
+  println(noOption) // None
 
-  def unsafeMethod: String = null
+  /**
+   * Dealing with unsafe Methods
+   *
+   * Option Type should do the Null checks for us
+   */
+  def unsafeMethod: String = null // It is suppose to return String but at some code path it returns NULL
 
   val result1 = Some(unsafeMethod) // Some(unsafeMethod) <=> Some(null) Which is WRONG !! Because Some should always have a valid value inside
 
   val result2 = Option(unsafeMethod) // Correct Way !!
 
-  println(result2)
+  println(result2) // None
 
-  /*
-  Chained Methods
+  /**
+    Chained Methods
+    - We deal with unsafe methods by chaining them with safe methods
    */
   def backupMethod(): String = "A valid result"
 
   val chainedResult = Option(unsafeMethod).orElse(Option(backupMethod())) // which means in case `unsafeMethod` is NULL then fall back to `backupMethod`
 
-  /*
-  Design Unsafe APIs
-
-  Return Option in case of returning NULLs
+  /**
+    How to Design Unsafe APIs
+    - Return Option in case of returning NULLs
    */
 
   def betterUnsafeMethod(): Option[String] = None
-  def betterBackuoMethod(): Option[String] = Some("A valid Result")
+  def betterBackupMethod(): Option[String] = Some("A valid Result")
 
-  val betterChainedResult = betterUnsafeMethod() orElse betterBackuoMethod()
+  val betterChainedResult = betterUnsafeMethod() orElse betterBackupMethod()
 
 
-  /*
-  Functions on Options
+  /**
+    Functions on Options
    */
-  println(myFirstOption.isEmpty)
-  println(myFirstOption.get) // UNSAFE - Don't use this because `myFirstOption` may be `None`
+  println(myFirstOption.isEmpty) // false
+  println(myFirstOption.get) // UNSAFE - Don't use this because `myFirstOption` may be `None` [Its like trying to access null pointer]
 
   // println(noOption.get) // Throws Exception "NoSuchElementException"
 
-  println(myFirstOption.map(_ * 2))
+  println(myFirstOption.map(_ * 2)) // Some(8)
 
-  println(myFirstOption.filter(_ > 10))
+  println(myFirstOption.filter(_ > 10)) // None
 
+  // FlatMap requires following Predicate => A => Option[B]
   println(myFirstOption.flatMap( x => Option(x * 10)))
 
-  /*
-  Exercise
+  /**
+    Exercise
    */
 
   val config: Map[String, String] = Map(
 
-    // Values are fetched from somewhere else
+    // Values are fetched from somewhere else. So values of host and port might / might not be here
     "host" -> "172.43.54.65",
     "port" -> "80"
   )
@@ -82,46 +88,46 @@ object OptionsBasics extends App {
     }
   }
 
+  // Solution 1
+
   // try to establish a connection
-  val host = config.get("host") // returns Option
-  val port = config.get("port") // returns Option
+  val host: Option[String] = config.get("host")
+  val port: Option[String] = config.get("port")
 
   /*
-  Equivalent Imperative Code
-  if (h != null)
-    if (p != null)
-      return Connection.apply(h,p)
+    Equivalent Imperative Code
+    if (h != null)
+      if (p != null)
+        return Connection.apply(h,p)
 
-  return null
+    return null
    */
-  val connection = host.flatMap(h => port.flatMap(p => Connection.apply(h,p)))
+  val connection: Option[Connection] = host.flatMap(h => port.flatMap(p => Connection.apply(h,p)))
 
   /*
   if (c != null)
-    return c.connet
+    return c.connect
   return null
    */
-  val connectionStatus = connection.map(c => c.connect)
+  val connectionStatus: Option[String] = connection.map(c => c.connect)
 
-  println(connectionStatus)
-  connectionStatus.foreach(println)
+  println(connectionStatus) // Some(Connected to Server) Or None
 
   /*
-  Chaining All
+    Solution - 2: Chaining All
    */
   config.get("host")
     .flatMap(host => config.get("port")
-      .flatMap(port => Connection(host, port))
-    .map(connection => connection.connect))
+      .flatMap(port => Connection(host, port)).map(connection => connection.connect))
     .foreach(println)
 
   /*
-  for - comprehension
+  Solution - 3: for - comprehension
    */
-  val connStatus = for {
-    host <- config.get("host")
-    port <- config.get("port")
-    connection <- Connection(host, port)
+  val connStatus: Option[String] = for {
+    host <- config.get("host") // given a host
+    port <- config.get("port") // given a port
+    connection <- Connection(host, port) // given a connection
   } yield connection.connect
 
   connStatus.foreach(println)

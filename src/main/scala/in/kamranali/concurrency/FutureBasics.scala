@@ -38,7 +38,7 @@ object FutureBasics extends App {
   // Fulfill a future IMMEDIATELY with a value
   def fulfillImmediately[T](value: T): Future[T] = Future(value)
 
-  // Second future runs when first has completed i.e. inSqquence
+  // Second future runs when first has completed i.e. in Sequence
   def inSequence[A, B](first: Future[A], second: Future[B]): Future[B] = {
     first.flatMap(_ => second) // <- returns second future making sure first has run
   }

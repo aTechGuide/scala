@@ -8,7 +8,7 @@ object Variance extends App {
   class Cat extends Animal
   class Crocodile extends Animal
 
-  /*
+  /**
     What is variance
     - Its a problem of "inheritance", in reality its the problem of Type Substitution of Generics
    */
@@ -32,11 +32,17 @@ object Variance extends App {
   class XCage[-T]
   val xcage: XCage[Cat] = new XCage[Animal] //<- We are replacing specific cage of CAT with general cage of Animal i.e. if RHS contain and Animal, it can also contain a Cat
 
-  /*
-    Various Type of Animal Cages with an Animal inside
+  /**
+   * Before Going into details learn GOLDEN RULE
+   * - If our generic type Contains or Creates or Produces elements of type T, it should be +T.
+   *   - E.g. Cage (Holding animals), Garage (Holding Cars), Factory (Producing elements), List (Holding elements)
+   * - If our generic type Consumes or Acts on elements of type T, it should be -T.
+   *   - E.g. Vet (Heals animals), Mechanic (Fix Cars), Garbage Pit (Consumes Object), function (in terms of argument Type, as it acts on elements)
    */
 
-
+  /**
+    Various Type of Animal Cages with an Animal inside
+   */
 
   /*
     FIELDS
@@ -146,7 +152,7 @@ object Variance extends App {
   //val evilCat = shop.get(true, new Cat) //<- Compilation Error
 
   class TerraNova extends Dog
-  val bigFurry = shop.get(true, new TerraNova) // Compiles
+  val bigFurry = shop.get(isItaPuppy = true, new TerraNova) // Compiles
 
 
   /*
