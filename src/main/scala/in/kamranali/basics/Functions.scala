@@ -4,23 +4,23 @@ import scala.annotation.tailrec
 
 object Functions extends App {
 
-  /*
-  Simple Function
-  1. Compiler can infer the return type of Function by looking at implementation
-  CAVEAT: For recursive functions, compiler can't figure out the return type
+  /**
+    Simple Function
+    1. Compiler can infer the return type of Function by looking at implementation
+    CAVEAT: For recursive functions, compiler can't figure out the return type
    */
   def aFunc(a: String, b: Int): String = a + " " + b
 
   // Calling a function is also an expression
   //println("hello", 3)
 
-  /*
-  Function with Side Effects
+  /**
+    Function with Side Effects
    */
   def aFuncWithSideEffects(a: String): Unit = print(a)
 
-  /*
-  Parameter less Functions
+  /**
+    Parameter less Functions
    */
   def parameterLessFunction(): Int = 42
 
@@ -28,7 +28,7 @@ object Functions extends App {
   // println(parameterLessFunction)
   // println(parameterLessFunction())
 
-  /*
+  /**
     Use Recursive Functions in place of loops
     1. Recursive Functions needs return type else compiler will complain
    */
@@ -39,8 +39,8 @@ object Functions extends App {
 
   // println(aRepeatedFunction("Hello", 3))
 
-  /*
-  Auxiliary Function inside a Function
+  /**
+    Auxiliary Function inside a Function
    */
   def aBigFunction(n: Int): Int = {
 
@@ -56,16 +56,14 @@ object Functions extends App {
 
   // print(fibonacci(8))
 
-  /*
-  Tail Recursion
+  /**
+    Tail Recursion
    */
   // To understand tail recursion lets take the example of Factorial Function
 
   def factorial(x: Int): BigInt =
-    if (x <=1 ) return 1
-    else {
-      x * factorial(x - 1)
-    }
+    if (x <=1 ) 1
+    else x * factorial(x - 1)
 
   // if we write factorial(50000) the program crashes because of Stack Overflow Exception
   // print("\nCalling Factorial" + factorial(50000))
@@ -76,7 +74,7 @@ object Functions extends App {
 
     @tailrec // <- This tells scala that this function should be tail recursive else throw error
     def factorialHelper(x: Int, accumulator: BigInt): BigInt = {
-      if (x <=1 ) return accumulator
+      if (x <=1 ) accumulator
       else factorialHelper(x - 1, x * accumulator)
     }
 
@@ -103,8 +101,8 @@ object Functions extends App {
   // in `x * factorial(x - 1)` it needs to calculate intermediary step `factorial(x - 1)`
   // and then multiple it with `x`
 
-  /*
-  Call by Value VS Call by Name
+  /**
+    Call by Value VS Call by Name
    */
 
   def callByValue(x: Long): Unit = {
@@ -125,14 +123,14 @@ object Functions extends App {
   // when we call callByName, ` System.nanoTime() ` Expression is passed literally as is. That expression is evaluated every time.
   // '=>' parameter delays the evaluation of the expression passed as parameter
 
-  /*
-  Default Args
+  /**
+    Default Args
    */
 
   // Let's take the example of Tail Recursive Factorial
 
   def tailRecursivefactorial(x: Int, accumulator: Int): Int = {
-    if (x <=1 ) return accumulator
+    if (x <=1 ) accumulator
     else tailRecursivefactorial(x - 1, x * accumulator)
   }
 
@@ -145,7 +143,7 @@ object Functions extends App {
   // Another way is to provide default values to some parameters. e.g.
 
   def tailRecursivefactorialDefaultParam(x: Int, accumulator: Int = 1): Int = {
-    if (x <=1 ) return accumulator
+    if (x <=1 ) accumulator
     else tailRecursivefactorial(x - 1, x * accumulator)
   }
 
@@ -153,7 +151,7 @@ object Functions extends App {
 
   // If we have following function
 
-  def savePic(format : String = "jpg", width: Int = 1920, height: Int = 1080) = print("Saving Picture")
+  def savePic(format : String = "jpg", width: Int = 1920, height: Int = 1080): Unit = print("Saving Picture")
 
   // If we want to pass only width then we have only two options
   // 1. Pass all the leading arguments e.g. savePic("bmp", 800)
