@@ -1,10 +1,16 @@
 package in.kamranali.concurrency
 
+
+/**
+  * [Concurrency] Chapter 5: JVM Thread Communication
+  * Exercise 2 - Deadlock
+  */
+
 object DeadLock extends App {
 
 
   case class Friend(name: String) {
-    def bow(other: Friend) = {
+    def bow(other: Friend): Unit = {
       this.synchronized {
         println(s"$this:I am bowing to my friend $other")
         other.rise(this)
@@ -12,7 +18,7 @@ object DeadLock extends App {
       }
     }
 
-    def rise(other: Friend) = {
+    def rise(other: Friend): Unit = {
       this.synchronized {
         println(s"$this I am rising to my friend $other")
       }

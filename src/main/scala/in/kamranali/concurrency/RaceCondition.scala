@@ -56,13 +56,23 @@ object RaceCondition extends App {
     Solution
 
   Option 1. use synchronized on critical path
-      - Only AnyRefs can have synchronized blocks
-      - Make no assumption about who gets the lock first
-      - keep locking to minimum (for performance)
-      - maintain thread safety at ALL times in parallel application
 
   Option 2. use @volatile
       - volatile on var or var means all READ/WRITE to it are synchronized
+   */
+
+  /**
+    * Synchronized
+    * - Entering synchronized expression on an object locks the Object's monitor
+    *   - Monitor -> It is the data structure internally used by the JVM to keep track of which object
+    *                is locked by Which Thread
+    *
+    * - Only AnyRefs can have synchronized blocks. So primitive types like Int, Boolean do not have synchronized expressions
+    *
+    * General Tips
+    * - Make no assumption about who gets the lock first
+    * - keep locking to minimum (for performance)
+    * - maintain thread safety at ALL times in parallel application
    */
 
   // Option 1. Using synchronized

@@ -1,22 +1,31 @@
 package in.kamranali.concurrency
 
+/**
+  * [Concurrency] Chapter 3: JVM Thread Communication
+  */
+
+/**
+  *  Problem => Forcing the thread to run actions in a guaranteed certain order. Although the thread themselves are NOT ordered
+  */
 object ProducerConsumer extends App {
 
   class SimpleContainer {
     private var value: Int = 0
 
-    def isEmpty = value == 0
+    def isEmpty: Boolean = value == 0
 
-    def set(newValue: Int) = value = newValue
+    /* Producing Method */
+    def set(newValue: Int): Unit = value = newValue
 
-    def get = {
+    /* Consuming Method */
+    def get: Int = {
       val result = value
       value = 0
       result
     }
   }
 
-  def naiveProdCons() = {
+  def naiveProdCons(): Unit = {
     val container = new SimpleContainer
 
     val consumer = new Thread(() => {
@@ -25,7 +34,7 @@ object ProducerConsumer extends App {
         println("[Consumer Actively Waiting]")
       }
 
-      println("[Consumer] I have consumed " + container.get)
+      println(s"[Consumer] I have consumed ${container.get}")
     })
 
     val producer = new Thread(() => {
@@ -43,11 +52,10 @@ object ProducerConsumer extends App {
 
   // naiveProdCons()
 
-  /*
-  Wait & Notify
-    - Only allowed in Synchronized expressions else it will crash the program
+  /**
 
-  Wait: Waiting on an object's monitor suspends the thread indefinitely
+    Wait & Notify
+    - Theory in One Note
    */
 
   /*
@@ -79,7 +87,7 @@ object ProducerConsumer extends App {
 */
 
   // No more busy waiting
-  def smartProdCons() = {
+  def smartProdCons(): Unit = {
     val container = new SimpleContainer
 
     val consumer = new Thread(() => {
@@ -90,17 +98,18 @@ object ProducerConsumer extends App {
       }
 
       // container must have some value
-      println("[Consumer] I have consumed " + container.get)
+      // Because only one that can wake consumer up from waiting will be the producer
+      println(s"[Consumer] I have consumed ${container.get}" )
     })
 
     val producer = new Thread(() => {
       println("[producer] computing ...")
-      Thread.sleep(500)
+      Thread.sleep(2000)
 
       val value = 42
 
       container.synchronized {
-        println("[producer] I have produced value: " + value)
+        println(s"[producer] I have produced value: $value")
         container.set(value)
         container.notify()
       }
