@@ -1,5 +1,9 @@
 package in.kamranali.concurrency
 
+/**
+  * [Concurrency] Chapter 10: Parallel Collections
+  */
+
 import java.util.concurrent.ForkJoinPool
 
 import scala.collection.parallel.ForkJoinTaskSupport
@@ -16,13 +20,13 @@ object ParallelUtils extends App {
   val aParallelVector = ParVector[Int](1,2,3)
 
   /**
-  Parallel Collections
-
-    Seq
-    Vectors
-    Array
-    Map -> Hash, Trie
-    Set -> Hash, Trie
+   * Parallel Collections
+   *
+   * - Seq
+   * - Vectors
+   * - Array
+   * - Map -> Hash Map, Trie Map
+   * - Set -> Hash Set, Trie Set
    */
 
   /*
@@ -75,10 +79,10 @@ object ParallelUtils extends App {
   // (Or there might be under race condition because sum might be accessed by simultaneous threads at same time)
 
 
-  /*
+  /**
     Configuring parallel collections
    */
-  // 2 threads managing aParallelVector
+  // Two threads managing aParallelVector
   aParallelVector.tasksupport = new ForkJoinTaskSupport(new ForkJoinPool(2))
 
   /*
