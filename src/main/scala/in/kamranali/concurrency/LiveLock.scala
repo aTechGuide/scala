@@ -40,8 +40,10 @@ object LiveLock extends App {
   val sam = Friend("Sam")
   val pierre = Friend("Pierre")
 
+  def triggerLL(): Unit = {
+    new Thread(() => sam.pass(pierre)).start()
+    new Thread(() => pierre.pass(sam)).start()
+  }
 
-  new Thread(() => sam.pass(pierre)).start()
-  new Thread(() => pierre.pass(sam)).start()
-
+  triggerLL()
 }

@@ -1,5 +1,9 @@
 package in.kamranali.concurrency
 
+/**
+  * [Concurrency] Chapter 11: Atomic Operations And References
+  */
+
 import java.util.concurrent.atomic.AtomicReference
 
 object AtomicOperationsAndReferences extends App {
@@ -15,16 +19,14 @@ object AtomicOperationsAndReferences extends App {
 
   atomic.getAndSet(5) // Thread Safe READ and Write
 
-  atomic.compareAndSet(38, 56) // <- Reference Equality
+  atomic.compareAndSet(38, 56) // <- Reference Equality (i.e. It Does NOT do deep equality inside)
   // if value = 38 then set it to 56
   // else DO NOTHING
 
-  atomic.updateAndGet(_ + 1) // thread safe function Run "_ + 1" on top of current value + update and returns the value inside Atomic Reference
-  atomic.getAndUpdate(_ + 1) // Get old value first and then run the function on the value contained in Atomic Reference
+  val updatedValue = atomic.updateAndGet(_ + 1) // thread safe function Run "_ + 1" on top of current value + update and returns the value inside Atomic Reference
+  val previousValue = atomic.getAndUpdate(_ + 1) // Get old value first and then run the function on the value contained in Atomic Reference
 
   atomic.accumulateAndGet(12, _ + _) // SUM the value inside `atomic` and 12, set the value inside atomic and return the result
   atomic.getAndAccumulate(12, _ + _ ) // Reverse of above.
-
-
 
 }
