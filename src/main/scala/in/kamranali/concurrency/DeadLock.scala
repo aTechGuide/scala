@@ -28,13 +28,15 @@ object DeadLock extends App {
   val sam = Friend("Sam")
   val pierre = Friend("Pierre")
 
-  /*
-  Deadlock: Two threads locking objects in reverse order
-
-  - If try to acquire monitor on another object within a synchronised block, then BE CAREFUL
-
+  /**
+    Deadlock: Two threads locking objects in reverse order
+    - If try to acquire monitor on another object within a synchronised block, then BE CAREFUL
    */
-  new Thread(() => sam.bow(pierre)).start() // sam's lock first and is waiting to acquire pierre's lock
-  new Thread(() => pierre.bow(sam)).start() // pierre's lock first and is waiting to acquire sam's lock
 
+  def triggerDL(): Unit = {
+    new Thread(() => sam.bow(pierre)).start() // sam's lock first and is waiting to acquire pierre's lock
+    new Thread(() => pierre.bow(sam)).start() // pierre's lock first and is waiting to acquire sam's lock
+  }
+
+  triggerDL()
 }

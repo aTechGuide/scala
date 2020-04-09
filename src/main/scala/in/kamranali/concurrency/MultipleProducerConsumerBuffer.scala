@@ -119,6 +119,6 @@ object MultipleProducerConsumerBuffer extends App {
 
   }
 
-  testNotifyAll()
+  // testNotifyAll()
 
 }
