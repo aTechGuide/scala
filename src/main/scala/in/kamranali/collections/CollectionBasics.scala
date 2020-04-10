@@ -1,6 +1,6 @@
 package in.kamranali.collections
 
-class CollectionBasics {
+object CollectionBasics {
 
   /*
   Scala offers both Mutable and Immutable collections

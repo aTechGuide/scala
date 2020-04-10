@@ -1,11 +1,11 @@
 package in.kamranali.basics
 
-object VariableTypes extends App {
+object Variables extends App {
 
   /*
   Variables
    */
-  val x = 10;
+  val x = 10
   //println(x) // prints 10
 
   // x = 2 val can't be reassigned as they are immutable
@@ -47,7 +47,7 @@ object VariableTypes extends App {
    */
 
   // Looping is very specific to imperative programming e.g.
-  var i = 0;
+  var i = 0
   while (i < 5) {
     //print(i)
     i += 1
@@ -62,14 +62,14 @@ object VariableTypes extends App {
 
   // Everything in scala is an Expression
   var aVariable = 3
-  val weird = (aVariable = 3) // Type of weird is Unit, which is a special type in scala equivalent to void in other languages
+  val weird: Unit = (aVariable = 3) // Type of weird is Unit, which is a special type in scala equivalent to void in other languages
 
   print(weird) //OP: ()
 
   // Side effects in scala are expressions returning Unit. When we say, Reassigning a variable is a side effect it means it is returning Unit.
   // Side Effects: print(), whiles, reassigning
 
-  val awhile = while (i < 5) { i += 1 }
+  val awhile: Unit = while (i < 5) { i += 1 }
 
   // Side effects are remnants of imperative programming. They are like instructions but in scala they are Expressions returning Units
 
