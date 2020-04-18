@@ -4,6 +4,8 @@ import java.util.concurrent.Executors
 
 /**
   * [Concurrency] Chapter 1: Basics
+  *
+  * Scala Doc -> https://docs.scala-lang.org/overviews/core/futures.html
   */
 object Basics extends App {
 

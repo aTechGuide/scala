@@ -13,10 +13,9 @@ object FutureBasics extends App {
 
   /**
     - Futures are Functional way of computing something in parallel or on another thread
-    - Future is a computation that will hold a value, computed by a thread at some
-      point in time.
+    - Future is a computation that will hold a value, computed by a thread at some point in time.
 
-    Basically, they are immutable READ ONLY objects
+    Basically, they are IMMUTABLE READ ONLY objects
    */
 
   def calculateTheMeaningOfLife(): Int = {
