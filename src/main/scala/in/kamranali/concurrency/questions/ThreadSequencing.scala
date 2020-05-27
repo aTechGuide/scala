@@ -105,14 +105,10 @@ object ThreadSequencing {
 
   def main(args: Array[String]): Unit = {
 
-    val consumer1 = new Thread(Consumer(1))
-    val consumer2 = new Thread(Consumer(2))
-    val consumer3 = new Thread(Consumer(3))
-
     val pool = Executors.newFixedThreadPool(3)
-    pool.execute(consumer1)
-    pool.execute(consumer2)
-    pool.execute(consumer3)
+    pool.execute(Consumer(1))
+    pool.execute(Consumer(2))
+    pool.execute(Consumer(3))
 
     /**
       * Following output will be printed
