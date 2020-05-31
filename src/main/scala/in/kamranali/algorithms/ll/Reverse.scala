@@ -1,23 +1,12 @@
 package in.kamranali.algorithms.ll
 
-case class ListNode(var data: Int, var next: ListNode = null)
+case class Reverse() {
 
-object CustomLL {
-
-  def printList(root: ListNode): Unit = {
-
-    var curr = root
-    while (curr != null) {
-
-      println(curr.data)
-      curr = curr.next
-    }
-  }
+  import Reverse._
 
   def reverse(root: ListNode): ListNode = {
 
     var prev: ListNode = null
-
     var curr = root
 
     while (curr != null) {
@@ -31,6 +20,11 @@ object CustomLL {
 
     prev
   }
+}
+
+object Reverse {
+
+  case class ListNode(var value: Int, var next: ListNode = null)
 
   def main(args: Array[String]): Unit = {
 
@@ -40,12 +34,19 @@ object CustomLL {
 
     printList(root)
 
-    val rev = reverse(root)
+    val rev = Reverse().reverse(root)
 
     printList(rev)
+  }
 
+  def printList(root: ListNode): Unit = {
 
+    var curr = root
+    while (curr != null) {
 
+      print(s"${curr.value} \t")
+      curr = curr.next
+    }
   }
 
 }
