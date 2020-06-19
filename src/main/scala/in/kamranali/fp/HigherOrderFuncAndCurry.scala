@@ -28,7 +28,7 @@ object HigherOrderFuncAndCurry extends App {
   Example 2
    */
   // Returning lambda which will apply function f, n times on value supplied to it
-  def nTimesBetter(f: Int => Int, n: Int): (Int => Int) = {
+  def nTimesBetter(f: Int => Int, n: Int): Int => Int = {
     if(n <= 0) (x: Int) => x
     else (x: Int) => nTimesBetter(f, n-1)(f(x))
   }
@@ -67,7 +67,7 @@ object HigherOrderFuncAndCurry extends App {
   // Let's Drill further with another Example
 
   /*
-  Lifting = ETA - Expansion
+    Lifting = ETA - Expansion
    */
 
   // suppose we have following Method
@@ -85,7 +85,7 @@ object HigherOrderFuncAndCurry extends App {
 
   // Example 2
   def inc(x: Int) = x + 1
-  List(1,2,3).map(inc) // <- Here compiler is doing an ETA Expansion for us converting `Inc` Method into a Function. Then it uses function values on map
+  List(1,2,3).map(inc) // <- Here compiler is doing an ETA Expansion for us converting `inc` Method into a Function. Then it uses function values on map
 
   // Basically compiler will rewrite it as
   List(1,2,3).map(x => inc(x))
