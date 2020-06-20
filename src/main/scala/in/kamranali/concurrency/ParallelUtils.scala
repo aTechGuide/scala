@@ -19,14 +19,14 @@ object ParallelUtils extends App {
 
   val aParallelVector = ParVector[Int](1,2,3)
 
-  /*
-  Parallel Collections
-
-  Seq
-  Vectors
-  Array
-  Map -> Hash Map, Trie Map
-  Set -> Hash Set, Trie Set
+  /**
+   * Parallel Collections
+   *
+   * - Seq
+   * - Vectors
+   * - Array
+   * - Map -> Hash Map, Trie Map
+   * - Set -> Hash Set, Trie Set
    */
 
   /*

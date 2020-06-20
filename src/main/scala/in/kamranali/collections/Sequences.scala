@@ -4,9 +4,9 @@ import scala.util.Random
 
 object Sequences extends App {
 
-  /*
-  - They have well defined order
-  - They can be indexed
+  /**
+    - They have well defined order
+    - They can be indexed
    */
 
   val aSequence = Seq(1,3,2,4) // Seq is companion object whose `apply` has a factory method that constructs subclasses of Seq
@@ -35,6 +35,7 @@ object Sequences extends App {
   // Arrays (Equivalent to Java Arrays)
 
   val numbers = Array(1,2,3,4)
+
   val threeElements = Array.ofDim[Int](3) // allocates array for 3 elements
   threeElements.foreach(println) // array is initialised with '0' value
 

@@ -16,7 +16,7 @@ object Exceptions extends App {
   Catching Exceptions
    */
   def getInt(withExceptions: Boolean): Int =
-    if (withExceptions) throw  new RuntimeException("No INT")
+    if (withExceptions) throw new RuntimeException("No INT")
     else 42
 
   try {
@@ -40,15 +40,17 @@ object Exceptions extends App {
 
   println(potentialFail) // potentialFail is anyVal (Unification of value returned from try ie. Int and catch ie. Unit)
 
-  /*
-  finally
-  - Is optional
-  - Doesn't influence return type of `try catch finally` block
-  - used for side effects e.g. logging to a file
+  /**
+   *
+   * finally
+   *   - Is optional
+   *   - Doesn't influence return type of `try catch finally` block
+   *   - used for side effects e.g. logging to a file
    */
 
-  /*
-  Custom Exceptions
+  /**
+   *
+   * Custom Exceptions
    */
   class MyException extends Exception
 
