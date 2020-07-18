@@ -1,5 +1,7 @@
 package in.kamranali.algorithms.backtracking
 
+import scala.collection.mutable.ArrayBuffer
+
 /**
   *
   * Reference
@@ -8,13 +10,9 @@ package in.kamranali.algorithms.backtracking
 
 class NQueenProblem {
 
-  case class CurrentPlacement(var placement: Array[Int])
-  case class Result(var value: List[Array[Int]])
+  def solve(N: Int): ArrayBuffer[Vector[Int]]  = {
 
-
-  def solve(N: Int): List[Array[Int]]  = {
-
-    def isValid(rowsSoFar: Int, placement: Array[Int]): Boolean = {
+    def isValid(rowsSoFar: Int, placement: Vector[Int]): Boolean = {
 
       val latestQueen = placement(rowsSoFar)
       (0 until rowsSoFar).foreach { idx =>
@@ -29,51 +27,46 @@ class NQueenProblem {
       true
     }
 
-    def solveUtil(N: Int, row: Int, currentPlacement: CurrentPlacement, result: Result): Unit = {
+    def solveUtil(N: Int, row: Int, currentPlacement: ArrayBuffer[Int], result: ArrayBuffer[Vector[Int]]): Unit = {
 
       // Base Case [We have exhausted the board]
-      if (row == N) result.value = result.value :+ currentPlacement.placement.clone()
+      if (row == N) result += currentPlacement.toVector
       else {
 
         // In current row, We will check all the columns
         (0 until N).foreach { col =>
-          currentPlacement.placement(row) = col // Choose that Column
-          if (isValid(row, currentPlacement.placement)) { // Check if it satisfies the constraints
+          currentPlacement += col // Choose that Column
+          if (isValid(row, currentPlacement.toVector)) { // Check if it satisfies the constraints
             solveUtil(N, row + 1, currentPlacement, result) // Recurse for that selection
 
           }
-          currentPlacement.placement(row) = 0 // Undo that choice
+          currentPlacement.remove(currentPlacement.length - 1) // Undo that choice
+          // Do NOT do currentPlacement -= col; else it removes the first occurrence of `col` element
         }
       }
     }
 
 
-    val placement = CurrentPlacement(Array.fill[Int](N)(0))
-    val result = Result(List[Array[Int]]())
+    val placement = ArrayBuffer[Int]()
+    val result = ArrayBuffer[Vector[Int]]()
 
     solveUtil(N, 0, placement, result)
-    result.value
+    result
 
   }
 
 }
 
-object NQueenProblemTest extends App {
+object NQueenProblem extends App {
   val sol = new NQueenProblem()
 
   // Test 1
   var A = 4
   var data = sol.solve(A)
+
+  // 1 3 0 2
+  // 2 0 3 1
   data.foreach { array =>
     println(array.mkString(" "))
   }
-
-
-//  assert(data == 42)
-
-  // Test 2
-//  A = Array[Int](-2, 1, -3, 4, -1, 2, 1, -5, 4)
-//  data = sol.solve(A)
-//  assert(data == 42)
-
 }
