@@ -33,6 +33,9 @@ import scala.collection.mutable.{ArrayBuffer, ListBuffer}
   *
   * - Linear sequence rather than an indexed sequence — use ListBuffer instead of ArrayBuffer
   *
+  * Performance Comparison
+  * - https://docs.scala-lang.org/overviews/collections/performance-characteristics.html
+  *
   * Reference
   * - https://alvinalexander.com/scala/array-class-methods-examples-syntax/
   * - https://alvinalexander.com/scala/make-vector-class-default-immutable-sequence-scala-cookbook/
