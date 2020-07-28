@@ -1,6 +1,14 @@
 package in.kamranali.algorithms.backtracking
 
-/**
+/*
+  *
+  * Time
+  * - Worst Case -> "aaaaa" As every single decomposition is palindromic and we have 2 ^ (n-1) total decompositions
+  * - total TIme = O (n * 2^n) i.e. we spent n time in each call * Total Decompositions
+  *
+  * Space
+  * - Call Stack will take O(n) time
+  * - We can mention output Stack also
   *
   * Leet Code -> https://leetcode.com/problems/palindrome-partitioning/submissions/
   *

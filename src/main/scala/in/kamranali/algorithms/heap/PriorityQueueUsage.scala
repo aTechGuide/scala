@@ -16,9 +16,7 @@ object PriorityQueueUsage extends App {
 
   val predicate: Ordering[Int] = (a: Int, b: Int) => b compare a
 
-  val minQueue = mutable.PriorityQueue.empty(predicate)
-  (7 to 1 by -1).foreach(elem => minQueue.enqueue(elem))
-
+  val minQueue = mutable.PriorityQueue(1,7,5,3,2)(predicate)
   println(minQueue.dequeue()) // 1
 
 
