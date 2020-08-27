@@ -11,7 +11,7 @@ abstract class MyList[+A] { // Covariant List
    */
 
   def head: A
-  def tail:MyList[A]
+  def tail: MyList[A]
   def isEmpty: Boolean
   def add[B >: A](element: B): MyList[B]
   def printElements: String

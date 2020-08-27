@@ -1,9 +1,22 @@
 package in.kamranali.fp
 
+/**
+  * Basic Scala Lesson 24 [What's a Function, Really]
+  *
+  * Ref
+  * - https://www.udemy.com/course/rock-the-jvm-scala-for-beginners/learn/lecture/7660680
+  */
 object AFunction extends App {
 
   /*
   In Functional Programming, We use Functions as First Class elements
+  [i.e. we want to work with functions like we work with plain values]
+
+  The problem is that we come from an Object-Oriented world.
+  And when we come from an Object-Oriented world and basically everything is an object that means it's an instance of some kind of class.
+  This is how the JVM was originally designed for Java for instances of classes and nothing else.
+
+  So the only way that we could simulate functional programming is to use classes and instances of those classes.
 
   In Scala we can't because we are stuck with classes (JVM is designed that way). So what we do is
   we end up working with Function simulations (so to speak) like traits etc
@@ -23,7 +36,7 @@ object AFunction extends App {
   Scala supports these function Types upto 22 parameters
 
   Bottom Line
-  ALL SCALA FUNCTIONS are OBJECTS
+  ALL SCALA FUNCTIONS are OBJECTS i.e. Instance of classes
    */
 
   val stringToInt = new Function[String, Int] {
@@ -32,7 +45,7 @@ object AFunction extends App {
 
   println(stringToInt("3") + 4)
 
-  val adder = new Function2[Int, Int, Int] {
+  val adder: ((Int, Int) => Int) = new Function2[Int, Int, Int] {
     override def apply(v1: Int, v2: Int): Int = v1 + v2
   }
   /*
@@ -41,7 +54,7 @@ object AFunction extends App {
    */
 
   /*
-  Function Returning Function
+    Function Returning Function
    */
   val superAdder: Function1[Int, Function1[Int, Int]] = new Function[Int, Function1[Int, Int]] {
 
