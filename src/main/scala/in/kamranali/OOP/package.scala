@@ -1,5 +1,12 @@
 package in.kamranali
 
+/**
+  * Basic Scala Lesson 23 b [Packaging And Imports]
+  *
+  * Ref
+  * - https://www.udemy.com/course/rock-the-jvm-scala-for-beginners/learn/lecture/7660676
+  */
+
 package object OOP {
 
   /*

@@ -128,7 +128,7 @@ object GenericsBasics extends App {
     // Answer is If in a List of Cat we add a Dog that will turn this new List into a List of Animals (i.e. it will convert it into a Generic Animal List)
 
     // Correct add method
-    def add[L >: A](element: L): MyNewList[L] = new MyNewList[L] // i.e. if in list A, I put B which is super type of A then this List will turn into MyNewList `B`
+    def add[S >: A](element: S): MyNewList[S] = new MyNewList[S] // i.e. if in list A, I put B which is super type of A then this List will turn into MyNewList `B`
     /*
       A = Cat
       B = Dog = which is an Animal. So B is basically an Animal
@@ -139,16 +139,17 @@ object GenericsBasics extends App {
 
   // Example
   val catList: MyNewList[Animal] = new MyNewList[Cat]
-  val aDog = new Dog
 
   // val newList  = catList.add[Dog](aDog) // Compilation Error
-  val newList  = catList.add[Animal](aDog) // Compilation Error
+  val newList1  = catList.add(new Dog) // Here S is Animal
+  val newList2 = catList.add(new String) // Here S is Object
 
-  println(newList.getClass) // Prints -> class in.kamranali.OOP.GenericsBasics$MyNewList
+  // println(newList1.getClass) // Prints -> class in.kamranali.OOP.GenericsBasics$MyNewList
 
   import scala.reflect.runtime.universe.TypeTag
   def f[T](v: T)(implicit ev: TypeTag[T]): Unit = println(ev.toString)
 
-  f(newList)
+  f(newList1)
+  f(newList2)
 
 }
