@@ -3,23 +3,26 @@ package in.kamranali.fp
 /**
   * Basic Scala Lesson 24 [What's a Function, Really]
   *
+  * - We will learn basics Or philosophy of Curried Functions
+  *
   * Ref
   * - https://www.udemy.com/course/rock-the-jvm-scala-for-beginners/learn/lecture/7660680
   */
 object AFunction extends App {
 
   /*
-  In Functional Programming, We use Functions as First Class elements
-  [i.e. we want to work with functions like we work with plain values]
+    In Functional Programming, We use Functions as First Class Programming Elements
+    - Pass functions as parameters Or retrun Function as results
+    - use functions are values
+    [i.e. we want to work with functions like we work with plain values]
 
-  The problem is that we come from an Object-Oriented world.
-  And when we come from an Object-Oriented world and basically everything is an object that means it's an instance of some kind of class.
-  This is how the JVM was originally designed for Java for instances of classes and nothing else.
+    The problem is that we come from an Object-Oriented world.
+    And when we come from an Object-Oriented world then basically everything is an object that means it's an instance of some kind of class.
+    This is how the JVM was originally designed for Java for instances of classes and nothing else.
 
-  So the only way that we could simulate functional programming is to use classes and instances of those classes.
+    So the only way that we could simulate functional programming is to use classes and instances of those classes.
+    So what we do is we end up working with Function simulations (so to speak) like traits etc
 
-  In Scala we can't because we are stuck with classes (JVM is designed that way). So what we do is
-  we end up working with Function simulations (so to speak) like traits etc
 
    */
 
@@ -54,7 +57,7 @@ object AFunction extends App {
    */
 
   /*
-    Function Returning Function
+    Function Returning Function [Curried Function]
    */
   val superAdder: Function1[Int, Function1[Int, Int]] = new Function[Int, Function1[Int, Int]] {
 
@@ -67,12 +70,12 @@ object AFunction extends App {
   println(adder3(9)) // 12
 
   /*
-  Curried Function
-  They are called with multiple parameter list
+    Curried Function
+    - They have the property that they can be called with multiple parameter lists just by their mere definition.
+    - So a Curried function actually receives some kind of parameter and returns another function which receives parameters.
+    - Basically they are called with multiple parameter list to get the final result
    */
   println(superAdder(3)(4)) // 7
-
-
 
 }
 
