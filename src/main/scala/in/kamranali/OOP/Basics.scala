@@ -3,41 +3,41 @@ package in.kamranali.OOP
 object Basics extends App {
 
   /*
-  Scala is more object oriented than Canonical object oriented languages like Java, C++
-  because everything (every single code) in scala is either inside class or Object or in package object
+    Scala is more object oriented than Canonical object oriented languages like Java, C++
+    because everything (every single code) in scala is either inside class or Object or in package object
    */
 
-  /*
-  Basic Class
+  /**
+    Basic Class
    */
   val cat = new Animal
   // println(cat)
 
-  /*
-  Class with Parameters
+  /**
+    Class with Parameters
    */
   val kamran = new Person("Kamran", 26)
   //println(kamran)
 
   // kamran.age will not compile because age is a class parameter NOT a class member (OR Fields)
 
-  /*
-  Class with Member/Field
+  /**
+    Class with Member/Field
    */
   // In Person1 `age` is Field and can be accessed by dot(.) operator
   val palash = new Person1("Kamran", 26)
   //println(palash.age)
 
-  /*
-  Class with Body
+  /**
+    Class with Body
    */
 
   val ali = new Person2("Kamran", 26) // Prints 4
 
   //println(ali.x) // Prints 2
 
-  /*
-  Class with Function/Method and Constructor
+  /**
+    Class with Function/Method and Constructor
    */
 
   val mayank = new Person3("Kamran", 26) // Prints 4
@@ -73,7 +73,7 @@ class Person3(name: String, val age: Int) {
   // whether name is field or not we can access it using `this`
 
   // Method Overloading
-  def greet(): Unit = println(s"Hi, I'm ${name}") // here name is this.name
+  def greet(): Unit = println(s"Hi, I'm $name") // here name is this.name
 
   // Multiple Constructor
   // Implementation of secondary constructor has to be another constructor and NOTHING ELSE
@@ -83,8 +83,8 @@ class Person3(name: String, val age: Int) {
 
 }
 
-/*
-Assignment
+/**
+  Assignment
 */
 
 class Writer(firstName: String, lastName: String, val year: Int) {
@@ -94,9 +94,9 @@ class Writer(firstName: String, lastName: String, val year: Int) {
 
 class Novel(name: String, year: Int, author: Writer) {
 
-  def authorAge = year - author.year
+  def authorAge: Int = year - author.year
 
-  def isWrittenBy(author: Writer) = author == this.author
+  def isWrittenBy(author: Writer): Boolean = author == this.author
 
   def copy(newYear: Int): Novel = new Novel(name, newYear, author)
 }

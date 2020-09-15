@@ -1,5 +1,13 @@
 package in.kamranali.collections.custom
 
+/**
+  * Basic Scala Lesson 28 Exercise [Map FlatMap Filter and For Comprehensions]
+  *
+  *
+  * Ref
+  * - https://www.udemy.com/course/rock-the-jvm-scala-for-beginners/learn/lecture/7660704
+  */
+
 abstract class MayBe[+T] {
 
   def map[B](f: T=> B): MayBe[B]
