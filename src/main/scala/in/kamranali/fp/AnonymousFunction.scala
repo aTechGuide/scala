@@ -3,6 +3,9 @@ package in.kamranali.fp
 /**
   * Basic Scala Lesson 25 [Anonymous Function]
   *
+  * Notes
+  * - Refer One Note Scala > Concepts > Lambda
+  *
   * Ref
   * - https://www.udemy.com/course/rock-the-jvm-scala-for-beginners/learn/lecture/7660692
   */

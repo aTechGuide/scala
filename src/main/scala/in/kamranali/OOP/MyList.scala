@@ -95,7 +95,7 @@ case class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
   def sort(compare: (A, A) => Int): MyList[A] = {
     def insert(x: A, sortedList: MyList[A]): MyList[A] =
       if (sortedList.isEmpty) new Cons(x, Empty)
-      else if (compare(x, sortedList.head) <= 0) new Cons(x, sortedList)
+      else if (compare(x, sortedList.head) <= 0) new Cons(x, sortedList) // i.e. x is the smallest element
       else new Cons(sortedList.head, insert(x, sortedList.tail))
 
     val sortedTail = t.sort(compare)
@@ -106,6 +106,13 @@ case class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
     if (list.isEmpty) throw new RuntimeException("Lists do not have same length")
     else new Cons(zip(h, list.head), t.zipWith(list.tail, zip))
 
+  /*
+    [1,2,3].filter(n % 2 == 0) =
+      [2,3].filter(n % 2 == 0) =
+      = new Cons(2, [3].filter(n % 2 == 0))
+      = new Cons(2, Empty.filter(n % 2 == 0))
+      = new Cons(2, Empty)
+   */
   def fold[B](start: B)(operator: (B, A) => B): B = {
     val newStart = operator(start, h)
     t.fold(newStart)(operator)

@@ -2,15 +2,23 @@ package in.kamranali.fp
 
 import scala.annotation.tailrec
 
+/**
+  * Basic Scala Lesson 26, 27 [Higher Order Func And Curry]
+  *
+  *
+  * Ref
+  * - https://www.udemy.com/course/rock-the-jvm-scala-for-beginners/learn/lecture/7660688#content
+  */
+
 object HigherOrderFuncAndCurry extends App {
 
-  /*
-  Higher Order Function:
-    Functions that either
-    - Takes functions as parameters
-    - Returns functions as results
+  /**
+    Higher Order Function:
+      Functions that either
+      - Takes functions as parameters
+      - Returns functions as results
 
-    e.g. map, flatmap, filter
+      e.g. map, flatMap, filter
    */
 
   // Applying function f, n Times on value x
@@ -22,10 +30,10 @@ object HigherOrderFuncAndCurry extends App {
 
   val plusOne = (x: Int) => x + 1
 
-  println(nTimes(plusOne, 10, 1))
+  // println(nTimes(plusOne, 10, 1)) // prints 11
 
   /*
-  Example 2
+    Example 2
    */
   // Returning lambda which will apply function f, n times on value supplied to it
   def nTimesBetter(f: Int => Int, n: Int): Int => Int = {
@@ -34,22 +42,22 @@ object HigherOrderFuncAndCurry extends App {
   }
 
   val plusTen = nTimesBetter(plusOne, 10)
-  println(plusTen(1))
+  // println(plusTen(1)) // prints 11
 
 
-  /*
-  Curried Function
-  - Helps in defining Helper functions that we want to use on various values
-  - '=>' is right Associative
+  /**
+    Curried Function
+    - Helps in defining Helper functions that we want to use on various values
+    - '=>' is right Associative
    */
   val superAdder: Int => Int => Int = (x: Int) => (y: Int) => x + y
   val add3 = superAdder(3) // add3 is a Lambda from Int => Int of form `y => y + 3`
 
-  println(add3(2))
-  println(superAdder(3)(10))
+  println(add3(2)) // prints 5
+  println(superAdder(3)(10)) // prints 13
 
-  /*
-  Function with multiple parameter list acts like curried Function
+  /**
+    Function with multiple parameter list acts like curried Function
    */
 
   def curriedFormatter(c: String)(x: Double): String = c.format(x)
@@ -60,13 +68,15 @@ object HigherOrderFuncAndCurry extends App {
   val preciseFormat: Double => String = curriedFormatter("%10.8f")
 
   // PS: We have to specify type of `standardFormat` and `preciseFormat` else the code will not compile
+  // The compiler complains because it will not know what type the `standardFormat` function will have
+  // The proper way to do that is to use partial function applications.
 
-  println("Standard Format: " + standardFormat(Math.PI))
-  println("Precise Format: " + preciseFormat(Math.PI))
+  println("Standard Format: " + standardFormat(Math.PI)) // Standard Format: 3.14
+  println("Precise Format: " + preciseFormat(Math.PI)) // Precise Format: 3.14159265
 
   // Let's Drill further with another Example
 
-  /*
+  /**
     Lifting = ETA - Expansion
    */
 
@@ -97,9 +107,27 @@ object HigherOrderFuncAndCurry extends App {
   val add5 = curriedAdder(5) _ // <- This `_` tell compiler to turn `curriedAdder` into a function value of "Int => Int" after you've applied first parameter list
 
 
-  /*
-  Exercise
+  /**
+    Exercise
    */
+
+  // Exercise 1
+  def toCurry(f: (Int, Int) => Int): Int => Int => Int =
+    x => y => f(x, y)
+
+  def fromCurry(f: Int => Int => Int): (Int, Int) => Int =
+    (x, y) => f(x)(y)
+
+
+  // Exercise 2
+  def compose[A, B, T](f: A => B, g: T => B): T => B =
+    x => f(g(x))
+
+  def andThen[A, B, C](f: A => B, g: B => C): A => C =
+    x => g(f(x))
+
+
+  // Exercise
   val simpleAddFunction = (x: Int, y: Int) => x + y
   def simpleAddMethod(x: Int, y: Int) = x + y
   def curriedAddMethod(x: Int)(y: Int) = x + y
@@ -125,8 +153,8 @@ object HigherOrderFuncAndCurry extends App {
   val add7_5 = simpleAddMethod(7, _: Int) // alternative syntax for turning methods into function values (Forces compiler for ETA expansion)
 
 
-  /*
-  Underscores
+  /**
+    Underscores
    */
   def concatenator(a: String, b: String, c: String): String = a + b + c
 
@@ -138,8 +166,8 @@ object HigherOrderFuncAndCurry extends App {
   println(fillInTheBlanks(" Kamran,", " Scala is awsome"))
 
 
-  /*
-  Difference Functions Vs Methods
+  /**
+    Difference Functions Vs Methods
    */
 
   def byName(n: => Int) = n + 1  // By Name Parameters
