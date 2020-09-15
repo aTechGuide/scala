@@ -1,4 +1,4 @@
-package in.kamranali.fp
+package in.kamranali.collections.custom
 
 import scala.annotation.tailrec
 
@@ -39,7 +39,7 @@ object EmptyStream extends MyStream[Nothing] {
 
   override def tail: MyStream[Nothing] = throw new NoSuchElementException
 
-  override def #::[B >: Nothing](element: B): MyStream[B] = new Cons[B](element, this)
+  override def #::[B >: Nothing](element: B): MyStream[B] = new ConsStream[B](element, this)
 
   override def ++[B >: Nothing](anotherStream: => MyStream[B]): MyStream[B] = anotherStream
 
@@ -54,40 +54,40 @@ object EmptyStream extends MyStream[Nothing] {
   override def take(n: Int): MyStream[Nothing] = this
 }
 
-class Cons[+A](hd: A, tl: => MyStream[A]) extends MyStream[A] { // without call by Name (: =>) stream will not be lazily evaluated
+class ConsStream[+A](hd: A, tl: => MyStream[A]) extends MyStream[A] { // without call by Name (: =>) stream will not be lazily evaluated
   override def isEmpty: Boolean = false
 
   override val head: A = hd
 
   override lazy val tail: MyStream[A] = tl  // `: =>` + `lazy` == CALL BY NEED
 
-  override def #::[B >: A](element: B): MyStream[B] = new Cons(element, this)
+  override def #::[B >: A](element: B): MyStream[B] = new ConsStream(element, this)
 
-  override def ++[B >: A](anotherStream: => MyStream[B]): MyStream[B] = new Cons(head, tail ++ anotherStream)
+  override def ++[B >: A](anotherStream: => MyStream[B]): MyStream[B] = new ConsStream(head, tail ++ anotherStream)
 
   override def foreach(f: A => Unit): Unit = {
     f(head)
     tail.foreach(f)
   }
 
-  override def map[B](f: A => B): MyStream[B] = new Cons(f(head), tail.map(f))  // preserves lazy evaluation
+  override def map[B](f: A => B): MyStream[B] = new ConsStream(f(head), tail.map(f))  // preserves lazy evaluation
 
   override def flatMap[B](f: A => MyStream[B]): MyStream[B] = f(head) ++ tail.flatMap(f)
 
   override def filter(predicate: A => Boolean): MyStream[A] = { // preserves lazy evaluation
-    if (predicate(head)) new Cons(head, tail.filter(predicate))
+    if (predicate(head)) new ConsStream(head, tail.filter(predicate))
     else tail.filter(predicate)
   }
 
   override def take(n: Int): MyStream[A] =
     if (n <= 0) EmptyStream
-    else if (n == 1) new Cons(head, EmptyStream)
-    else new Cons(head, tail.take(n - 1)) // preserves lazy evaluation
+    else if (n == 1) new ConsStream(head, EmptyStream)
+    else new ConsStream(head, tail.take(n - 1)) // preserves lazy evaluation
 }
 
 object MyStream {
   def from[A](start: A)(generator: A => A): MyStream[A] =
-    new Cons(start, MyStream.from(generator(start))(generator))
+    new ConsStream(start, MyStream.from(generator(start))(generator))
 }
 
 object StreamPlayground extends App {
@@ -104,20 +104,20 @@ object StreamPlayground extends App {
 
   println(startFrom0.map(_ * 2).take(100).toList())
 
-  println(startFrom0.flatMap(x => new Cons(x, new Cons(x + 1, EmptyStream))).take(10).toList())
+  println(startFrom0.flatMap(x => new ConsStream(x, new ConsStream(x + 1, EmptyStream))).take(10).toList())
 
   println(startFrom0.filter(_ < 10).take(10).toList())
 
   // Streams of Fibonacci numbers
   def fibonacci(first: BigInt, second: BigInt): MyStream[BigInt] =
-    new Cons[BigInt](first, fibonacci(second, first + second))
+    new ConsStream[BigInt](first, fibonacci(second, first + second))
 
   println(fibonacci(1,1).take(10).toList())
 
   // Stream of prime numbers with Eratosthenes' sieve
   def eratosthenes(numbers: MyStream[Int]): MyStream[Int] =
     if (numbers.isEmpty) numbers
-    else new Cons[Int](numbers.head, eratosthenes(numbers.tail.filter(_ % numbers.head != 0)))
+    else new ConsStream[Int](numbers.head, eratosthenes(numbers.tail.filter(_ % numbers.head != 0)))
 
   println(eratosthenes(MyStream.from(2)(_ + 1)).take(20).toList())
 

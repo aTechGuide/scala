@@ -1,5 +1,13 @@
 package in.kamranali.fp
 
+/**
+  * Basic Scala Lesson 28 [Map FlatMap Filter and For Comprehensions]
+  *
+  *
+  * Ref
+  * - https://www.udemy.com/course/rock-the-jvm-scala-for-beginners/learn/lecture/7660704
+  */
+
 object MapFlatMapFilterFor extends App {
 
   val list = List(1,2,3) // Creating a list by calling `apply` on List companion object
@@ -15,7 +23,7 @@ object MapFlatMapFilterFor extends App {
   val toPair = (x: Int) => List(x, x + 1)
   println(list.flatMap(toPair)) // List(1, 2, 2, 3, 3, 4)
 
-  /*
+  /**
     Q: Print all combinations between two lists
    */
   val numbers = List(1,2,3,4)
@@ -28,20 +36,20 @@ object MapFlatMapFilterFor extends App {
   // For each
   list.foreach(println) // Similar to map; Just that it receives function returning unit
 
-  /*
+  /**
     For - Comprehensions
     - Shorthand for Chains
    */
 
   // Let's write shorthand for `numbers.flatMap(x => chars.map( c => "" + c + x))`
-  val forCombinations1 = for {
+  val forCombinations1: List[String] = for {
     x <- numbers
     c <- chars
   } yield "" + c + x
 
   println(forCombinations1) // List(a1, b1, c1, d1, a2, b2, c2, d2, a3, b3, c3, d3, a4, b4, c4, d4)
 
-  val forCombinations2 = for {
+  val forCombinations2: List[String] = for {
     x <- numbers if x % 2 == 0 // keeping even numbers
     c <- chars
   } yield "" + c + x

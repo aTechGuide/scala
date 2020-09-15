@@ -1,4 +1,4 @@
-package in.kamranali.fp
+package in.kamranali.collections.custom
 
 import scala.annotation.tailrec
 

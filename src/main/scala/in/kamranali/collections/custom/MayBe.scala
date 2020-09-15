@@ -1,4 +1,4 @@
-package in.kamranali.OOP
+package in.kamranali.collections.custom
 
 abstract class MayBe[+T] {
 

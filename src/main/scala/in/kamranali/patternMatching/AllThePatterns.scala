@@ -1,6 +1,6 @@
 package in.kamranali.patternMatching
 
-import in.kamranali.OOP.{Cons, Empty, MyList}
+import in.kamranali.collections.custom.{Cons, Empty, MyList}
 
 object AllThePatterns extends App {
 

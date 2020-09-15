@@ -120,7 +120,7 @@ object HigherOrderFuncAndCurry extends App {
 
 
   // Exercise 2
-  def compose[A, B, T](f: A => B, g: T => B): T => B =
+  def compose[A, B, T](f: B => A, g: T => B): T => A =
     x => f(g(x))
 
   def andThen[A, B, C](f: A => B, g: B => C): A => C =
