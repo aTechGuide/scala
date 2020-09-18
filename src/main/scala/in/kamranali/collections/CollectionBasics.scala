@@ -1,5 +1,16 @@
 package in.kamranali.collections
 
+/**
+  * Basic Scala Lesson 29 [Collections Overview]
+  *
+  * In Notes of One Note
+  * - Scala > Concepts
+  *
+  *
+  * Ref
+  * - https://www.udemy.com/course/rock-the-jvm-scala-for-beginners/learn/lecture/7660714
+  */
+
 object CollectionBasics {
 
   /*

@@ -6,10 +6,18 @@ import java.util.Random
 import scala.util.{Failure, Success, Try}
 
 /**
- * Golden Rule:
- *   - If we have a hunch that our code may return a NULL use options
- *   - If we have a hunch that our code might throw Exceptions use Try
- */
+  * Basic Scala Lesson 34 [handling Failure]
+  *
+  * Function way of dealing with possibly failed computations
+  *
+  * Golden Rule:
+  *   - If we have a hunch that our code may return a NULL use options
+  *   - If we have a hunch that our code might throw Exceptions use Try
+  *
+  * Ref
+  * - https://www.udemy.com/course/rock-the-jvm-scala-for-beginners/learn/lecture/7660734
+  */
+
 object handlingExceptions extends App {
 
   /**
@@ -55,15 +63,15 @@ object handlingExceptions extends App {
   def betterUnsafeMethod(): Try[String] = Failure(new RuntimeException)
   def betterBackUpMethod(): Try[String] = Success("Valid Result")
 
-  val betterFalllback = betterUnsafeMethod() orElse betterBackUpMethod()
+  val betterFallback = betterUnsafeMethod() orElse betterBackUpMethod()
 
 
   /**
    * Map, flatMap, Filter
    */
-  println(aSuccess.map(_ * 2))
-  println(aSuccess.flatMap(x => Success(x * 10)))
-  println(aSuccess.filter(_ > 10))
+  println(aSuccess.map(_ * 2)) // Success(6)
+  println(aSuccess.flatMap(x => Success(x * 10))) // Success(30)
+  println(aSuccess.filter(_ > 10)) // Failure(java.util.NoSuchElementException: Predicate does not hold for 3)
 
   // For comprehensions
 
@@ -108,7 +116,7 @@ object handlingExceptions extends App {
     .flatMap(connection => connection.getSafe("/home"))
     .foreach(renderHTML)
 
-  // for comprehendsion
+  // for comprehension
   for {
     connection <- HttpService.getSafeConnection(host, port)
     html <- connection.getSafe("/home")

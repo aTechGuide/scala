@@ -2,6 +2,13 @@ package in.kamranali.collections
 
 import scala.annotation.tailrec
 
+/**
+  * Basic Scala Lesson 32 [Tuples And Maps Exercise]
+  *
+  * Ref
+  * - https://www.udemy.com/course/rock-the-jvm-scala-for-beginners/learn/lecture/10371102#content
+  */
+
 object SocialNetwork extends App {
 
   def add(network: Map[String, Set[String]], person: String): Map[String, Set[String]] = {
@@ -11,13 +18,13 @@ object SocialNetwork extends App {
 
   def friend(network: Map[String, Set[String]], a: String, b: String): Map[String, Set[String]] = {
 
-    val friendA = network(a)
-    val friendB = network(b)
+    val friendA: Set[String] = network(a)
+    val friendB: Set[String] = network(b)
 
     network + (a -> (friendA + b)) + (b -> (friendB + a))
   }
 
-  def unfriend(network: Map[String, Set[String]], a: String, b: String): Map[String, Set[String]] = {
+  def unFriend(network: Map[String, Set[String]], a: String, b: String): Map[String, Set[String]] = {
 
     val friendA = network(a)
     val friendB = network(b)
@@ -27,13 +34,14 @@ object SocialNetwork extends App {
 
   def remove(network: Map[String, Set[String]], person: String): Map[String, Set[String]] = {
 
+    @tailrec
     def removeAux(friends: Set[String], networkAcc: Map[String, Set[String]]): Map[String, Set[String]] = {
       if (friends.isEmpty) networkAcc
-      else removeAux(friends.tail, unfriend(networkAcc, person, friends.head))
+      else removeAux(friends.tail, unFriend(networkAcc, person, friends.head))
     }
 
-    val unfriended = removeAux(network(person), network) // remove the friendship
-    unfriended - person // removes person key
+    val unFriended = removeAux(network(person), network) // remove the friendship
+    unFriended - person // removes person key
 
   }
 
@@ -47,7 +55,8 @@ object SocialNetwork extends App {
   }
 
   def nPeopleWithNoFriend(network: Map[String, Set[String]]): Int = {
-    network.filterKeys(k => network(k).size == 0).size
+    network.filterKeys(network(_).isEmpty).size
+    // network.count(_._2.isEmpty) //<- Alternative Implementation
   }
 
   def socialConnection(network: Map[String, Set[String]], a: String, b: String): Boolean = {
@@ -66,14 +75,17 @@ object SocialNetwork extends App {
     bfs(b, Set(), network(a) + a)
   }
 
+  // Testing
   val empty: Map[String, Set[String]] = Map()
 
   val network = add(add(empty, "Bob"), "Mary")
-  println(network)
+  println(network) // Map(Bob -> Set(), Mary -> Set())
 
-  println(friend(network, "Bob", "Mary"))
+  println(friend(network, "Bob", "Mary")) // Map(Bob -> Set(Mary), Mary -> Set(Bob))
 
-  println(unfriend(network, "Bob", "Mary"))
+  println(unFriend(network, "Bob", "Mary")) // Map(Bob -> Set(), Mary -> Set())
+
+  println(remove(friend(network, "Bob", "Mary"), "Bob")) // Map(Mary -> Set())
 
   println("\n\n /** People Network **/")
   // Jim, Bob, Mary
@@ -81,12 +93,12 @@ object SocialNetwork extends App {
   val jimBob = friend(people, "Bob", "Jim")
   val testNet = friend(jimBob, "Bob", "Mary")
 
-  println(testNet)
-  println(nFriends(testNet, "Bob"))
-  println(mostFriends(testNet))
-  println(nPeopleWithNoFriend(testNet))
+  println(testNet) // Map(Bob -> Set(Jim, Mary), Mary -> Set(Bob), Jim -> Set(Bob))
+  println(nFriends(testNet, "Bob")) // 2
+  println(mostFriends(testNet)) // Bob
+  println(nPeopleWithNoFriend(testNet)) // 0
 
-  println(socialConnection(testNet, "Mary", "Jim"))
-  println(socialConnection(network, "Bob", "Mary"))
+  println(socialConnection(testNet, "Mary", "Jim")) // true
+  println(socialConnection(network, "Bob", "Mary")) // false
 
 }

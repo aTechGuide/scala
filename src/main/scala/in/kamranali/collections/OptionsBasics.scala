@@ -2,12 +2,19 @@ package in.kamranali.collections
 
 import java.util.Random
 
+/**
+  * Basic Scala Lesson 33 [Options]
+  *
+  * Ref
+  * - https://www.udemy.com/course/rock-the-jvm-scala-for-beginners/learn/lecture/7660732#overview
+  */
+
 object OptionsBasics extends App {
 
   /*
-  Options philosophically means the possible absence of a value
+    Options philosophically means the possible absence of a value
 
-  Were invented to deal with unsafe APIs
+    Were invented to deal with unsafe APIs
    */
 
   val myFirstOption: Option[Int] = Some(4)
@@ -35,7 +42,7 @@ object OptionsBasics extends App {
    */
   def backupMethod(): String = "A valid result"
 
-  val chainedResult = Option(unsafeMethod).orElse(Option(backupMethod())) // which means in case `unsafeMethod` is NULL then fall back to `backupMethod`
+  val chainedResult: Option[String] = Option(unsafeMethod).orElse(Option(backupMethod())) // which means in case `unsafeMethod` is NULL then fall back to `backupMethod`
 
   /**
     How to Design Unsafe APIs
@@ -118,11 +125,12 @@ object OptionsBasics extends App {
    */
   config.get("host")
     .flatMap(host => config.get("port")
-      .flatMap(port => Connection(host, port)).map(connection => connection.connect))
+      .flatMap(port => Connection(host, port))
+      .map(connection => connection.connect))
     .foreach(println)
 
   /*
-  Solution - 3: for - comprehension
+    Solution - 3: for - comprehension
    */
   val connStatus: Option[String] = for {
     host <- config.get("host") // given a host
