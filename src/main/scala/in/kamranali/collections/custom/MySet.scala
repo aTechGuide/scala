@@ -2,6 +2,15 @@ package in.kamranali.collections.custom
 
 import scala.annotation.tailrec
 
+/**
+  * Advance Scala Lesson 10, 11, 12 [Functional Set]
+  *
+  * Ref
+  * - https://www.udemy.com/course/advanced-scala/learn/lecture/10937352
+  * - https://www.udemy.com/course/advanced-scala/learn/lecture/10937358
+  * - https://www.udemy.com/course/advanced-scala/learn/lecture/10937362
+  */
+
 trait MySet[A] extends (A => Boolean) {
 
   def contains(elem: A): Boolean
@@ -18,14 +27,14 @@ trait MySet[A] extends (A => Boolean) {
   override def apply(elem: A): Boolean = contains(elem)
 
   /*
-  Enhancements
+    Enhancements
    */
   def -(elem: A): MySet[A] // removing an element
   def --(anotherSet: MySet[A]): MySet[A] // difference
   def &(anotherSet: MySet[A]): MySet[A] // intersection
 
   /*
-  Negating a finite number of elements leads to infinite number of elements
+    Negating a finite number of elements leads to infinite number of elements
    */
   def unary_! : MySet[A] // Negation of set
 }
@@ -83,7 +92,7 @@ class AllInclusiveSet[A] extends MySet[A] {
 }
 */
 
-// This class denotes every element of Type A which satisfies a property i.e. { x in A | property(a) }
+// This class denotes every element of Type A which satisfies a property i.e. { x in A | property(x) }
 // `AllInclusiveSet` is an special case of `PropertyBasedSet` where every element in domain A, the function of property returns true
 class PropertyBasedSet[A](property: A => Boolean) extends MySet[A] {
   override def contains(elem: A): Boolean = property(elem)
@@ -123,7 +132,7 @@ class NonEmptySet[A](head: A, tail: MySet[A]) extends MySet[A] {
     elem == head || tail.contains(elem)
 
   override def +(elem: A): MySet[A] =
-    if (this contains(elem)) this
+    if (this contains elem) this
     else new NonEmptySet[A](elem, this)
 
   /*
@@ -183,13 +192,16 @@ object SetPlayground extends App {
   s + 5 ++ MySet(-1, -2) + 3 map (x => x * 10) filter (_ % 2 == 0) foreach println
 
   val negative = !s //s.unary_! = all the naturals not equal to 1 2 3 4
-  println(negative(2))
-  println(negative(5))
+  println(negative(2)) // false
+  println(negative(5)) // true
 
   val negativeEven = negative.filter(_ % 2 == 0)
-  println(negativeEven(5))
+  println(negativeEven(5)) // false
 
   val negativeEven5 = negativeEven + 5 // all even numbers bigger > 4 + 5
-  println(negativeEven5(5))
+  println(negativeEven5(5)) // true
+
+  val subs = s -- MySet(3, 4, 5, 6)
+  subs foreach println
 
 }
