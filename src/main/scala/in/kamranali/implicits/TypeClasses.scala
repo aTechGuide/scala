@@ -1,5 +1,12 @@
 package in.kamranali.implicits
 
+/**
+  * Advance Scala Lesson 35 [Type Classes]
+  *
+  * Ref
+  * - https://www.udemy.com/course/advanced-scala/learn/lecture/11053820
+  */
+
 object TypeClasses extends App {
 
   /*

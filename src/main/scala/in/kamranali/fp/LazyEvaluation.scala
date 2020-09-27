@@ -1,5 +1,14 @@
 package in.kamranali.fp
 
+import scala.collection.generic.FilterMonadic
+
+/**
+  * Advance Scala Lesson 15 [LazyEvaluation]
+  *
+  * Ref
+  * - https://www.udemy.com/course/advanced-scala/learn/lecture/10937384
+  */
+
 object LazyEvaluation extends App {
 
   // val x1: Int = throw new RuntimeException() // Crash the program
@@ -7,11 +16,12 @@ object LazyEvaluation extends App {
   lazy val x2: Int = throw new RuntimeException() // DOESN'T  Crash the program
 
   /*
-  Lazy Values are evaluated when they are used for the first time
+    Lazy Values are evaluated when they are used for the first time (by need basis)
    */
 
   //println(x2) // Crash the program
 
+  // Note: Once the value is evaluated then the same value will stay assigned to that same name
   lazy val x3: Int = {
     println("Hello")
     42
@@ -20,7 +30,9 @@ object LazyEvaluation extends App {
   println(x3) // x3 is evaluated. Prints `Hello`.
   println(x3) // x3 is NOT Re-evaluated again
 
-  // Examples of implications: With Side Effects
+  /*
+    Examples of implications: With Side Effects
+   */
   def sideEffectCondition: Boolean = {
     println("Boo")
     true
@@ -30,22 +42,24 @@ object LazyEvaluation extends App {
 
   lazy val lazyCondition = sideEffectCondition
 
-  println(if (simpleCondition && lazyCondition) "yes" else "no" )
+  println(if (simpleCondition && lazyCondition) "yes" else "no" ) // "no" is printed. Side effect is NOT printed
+
 
   /*
-
+    Examples of implications: In Conjunction with call by name
    */
-  // Examples of implications: In Conjunction with call by name
   def byNameMethod1(n: => Int): Int = n + n + n + 1
 
   def retrieveMagicValue = {
     // side effect or a long computation
-    Thread.sleep(1000)
     println("Waiting")
+    Thread.sleep(1000)
     42
   }
 
   println(byNameMethod1(retrieveMagicValue)) // 3 sec Waiting time
+
+  // it doesn't make sense to use call by name and still evaluate it multiple times unnecessarily.
 
 
   // use lazy vals
@@ -57,7 +71,7 @@ object LazyEvaluation extends App {
   println(byNameMethod2(retrieveMagicValue)) // 1 sec waiting
 
   /*
-  Filtering with Lazy vals
+    Examples of implications: Filtering with Lazy vals
    */
   def lessThan30(i: Int): Boolean = {
     println(s"$i is less than 30?")
@@ -70,13 +84,15 @@ object LazyEvaluation extends App {
   }
 
   val numbers = List(1, 25, 40, 5, 23)
-  val lt30 = numbers.filter(lessThan30) // List(1,25,5,23)
-  val gt20 = lt30.filter(greaterThan20)
+  val lt30 = numbers.filter(lessThan30) // List(1, 25, 5, 23)
+  val gt20 = lt30.filter(greaterThan20) // List(25, 23)
 
+  println
   println(gt20)
 
-  val lt30lazy = numbers.withFilter(lessThan30)
-  val gt20Lazy = lt30lazy.withFilter(greaterThan20)
+  val lt30lazy = numbers.withFilter(lessThan30) // lazy vals under the hood
+  val gt20Lazy: FilterMonadic[Int, List[Int]] = lt30lazy.withFilter(greaterThan20)
+  // FilterMonadic is just a wrapper over the original collection with lazy vals under the hood.
 
   // `withFilter` uses lazy values under the hood
   println()
@@ -86,7 +102,7 @@ object LazyEvaluation extends App {
   // If we look at result we can see, Predicates are being check on bi need basis
 
   /*
-  For-comprehension use withFilter with guards
+    For-comprehension use withFilter with guards
    */
 
   for {
@@ -95,12 +111,5 @@ object LazyEvaluation extends App {
 
   // Above For-comprehension translates to
   List(1,2,3).withFilter(_ % 2 == 0).map(_ + 1) // List[Int]
-
-
-
-
-
-
-
 
 }

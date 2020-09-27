@@ -6,6 +6,8 @@ import scala.util.Try
 /**
   * Fun(c) 2018.7: John De Goes - FP to the Max
   * - https://www.youtube.com/watch?v=sxudIMiOo68&t=5420s
+  *
+  * - https://gist.github.com/jdegoes/1b43f43e2d1e845201de853815ab3cb9g
   */
 object FunctionalGuessGame {
 
