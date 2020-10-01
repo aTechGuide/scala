@@ -2,6 +2,13 @@ package in.kamranali.implicits
 
 import java.util.Date
 
+/**
+  * Advance Scala Lesson 39 [Json Serialization]
+  *
+  * Ref
+  * - https://www.udemy.com/course/advanced-scala/learn/lecture/11053838
+  */
+
 object JsonSerialization extends App {
 
   case class User(name: String, age: Int, email: String)
@@ -13,11 +20,11 @@ object JsonSerialization extends App {
     We want our code to be extensible + people can contribute. So we are not writing its serializers in class itself.
    */
 
-  /*
+  /**
     We will use TypeClass Pattern
    */
 
-  // Step 1: Create intermediate data types which can be stringify to Json from primitive types e.g. Int, String etc
+  // Step 1: Create intermediate data types which can be stringify to Json from primitive types e.g. Int, String, Date etc
   sealed trait JSONValue { // <- intermediate data type
     def stringify: String
   }
@@ -60,10 +67,10 @@ object JsonSerialization extends App {
   }
 
   // Testing
-  val data = JSONObject(Map(
+  val data: JSONObject = JSONObject(Map(
     "user" -> JSONString("Daniel"),
     "Post" -> JSONArray(List(
-      JSONString("Scala"),
+      JSONString("Scala Rocks!"),
       JSONNumber(453)
     ))
   ))
@@ -118,7 +125,7 @@ object JsonSerialization extends App {
     ))
   }
 
-  // conversions
+  // Step 3: conversions
   implicit class JSONOps[T](value: T) {
     def toJSON(implicit converter: JSONConverter[T]): JSONValue = converter.convert(value)
   }
@@ -131,16 +138,8 @@ object JsonSerialization extends App {
     Post("Look at this", now),
   ))
 
-  println(feed.toJSON.stringify)
+  println(feed.toJSON.stringify) // {"user":{"name":"John","age":34,"email":"john@g.com"},"posts":[{"content":"Hello","created:":"Tue Sep 29 22:39:46 IST 2020"},{"content":"Look at this","created:":"Tue Sep 29 22:39:46 IST 2020"}]}
 
   // Step 3: Serialize intermediate data types to JSON
-
-
-
-
-
-
-
-
 
 }

@@ -1,5 +1,12 @@
 package in.kamranali.implicits
 
+/**
+  * Advance Scala Lesson 38 [Type Class, part 3a]
+  *
+  * Ref
+  * - https://www.udemy.com/course/advanced-scala/learn/lecture/11053834
+  */
+
 object TypeClassDeeper extends App {
 
   trait HTMLSerializer[T] { // <- TYPE Class with Type T
@@ -22,20 +29,22 @@ object TypeClassDeeper extends App {
   val john = User("John", 13, "johan@abc.con")
   println(john.toHTML(UserSerializer)) // <- Compiler: println(new HTMLEnrichment[User](john).toHTML(UserSerializer))
 
-  // Please serialize `john` with `UserSerializer`. So Compiler tries to wrap `john` into whatever implicit has the `toHTML` method taking `UserSerializer`
-  // here `toHTML` method is implicit as `john` was wrapped into `HTMLEnrichment[User]`
+  // Please serialize `john` with `UserSerializer`.
+  // So Compiler tries to wrap `john` into whatever implicit has the `toHTML` method that takes `UserSerializer`
 
-  // One Step further If HTMLEnrichment class has toHTML using implicit keyword
+  // One Step further
+  // If HTMLEnrichment class has toHTML method that takes `serializer` using implicit keyword
     // def toHTML(implicit serializer: HTMLSerializer[T]): String = serializer.serialize(value)
-    // then an `implicit` UserSerializer can be taken in as
-      // println(john.toHTML)
+
+  // then an `implicit` UserSerializer can be taken in as
+  // println(john.toHTML)
 
   /*
     Above Feature of `implicit class` solves following problems
     1. We can extend functionality of new types (example below)
     2. We can have different implementations for same type
       2.a if we are using implicits in `toHTML` then we can import implicit serializer into local scope
-      2.b Without implicits, Passing it explicitely
+      2.b Without implicits, Passing it explicitly
     3. Super Expressive
    */
 
@@ -54,27 +63,27 @@ object TypeClassDeeper extends App {
 
   println(john.toHTML(PartialUserSerializer))
 
-  /*
+  /**
     Exercise
 
     Enhance Equality class with === & !== Method
    */
 
-  // Type Class
+  // 1 Type Class
   trait Equal[T] {
     def apply(a: T, b: T): Boolean
   }
 
-  // Type Class Instance
+  // 2 Type Class Instance
   implicit object NameEquality extends Equal[User] {
     override def apply(a: User, b: User): Boolean = a.name == b.name
   }
 
-  // CONVERSION with implicit classes
+  // 3 CONVERSION with implicit classes
   implicit class TypeSafeEqual[T](value: T) {
-    def ===(anotherValue: T)(implicit equal: Equal[T]) = equal.apply(value, anotherValue)
+    def ===(anotherValue: T)(implicit equal: Equal[T]): Boolean = equal.apply(value, anotherValue)
 
-    def !==(anotherValue: T)(implicit equal: Equal[T]) = !equal.apply(value, anotherValue)
+    def !==(anotherValue: T)(implicit equal: Equal[T]): Boolean = !equal.apply(value, anotherValue)
   }
 
   val john1 = User("John", 13, "johan@abc.con")
@@ -94,7 +103,7 @@ object TypeClassDeeper extends App {
     Benefits
     1 - Type Safety
    */
-  println(john == 43) // <- Allowed
+  println(john == 43) // <- Allowed (as here we are comparing references)
 
   // println(john === 43) // <- Fails, Compiler forces that `john` and `43` should be of same Type
 

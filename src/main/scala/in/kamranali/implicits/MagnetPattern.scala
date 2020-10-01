@@ -3,6 +3,13 @@ package in.kamranali.implicits
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
+/**
+  * Advance Scala Lesson 40 [Magnet Pattern]
+  *
+  * Ref
+  * - https://www.udemy.com/course/advanced-scala/learn/lecture/11053842
+  */
+
 object MagnetPattern extends App {
 
   /*
@@ -18,7 +25,7 @@ object MagnetPattern extends App {
     def receive(request: P2PRequest): Int
     def receive(response: P2PResponse): Int
 
-    // def recieve[T](message: T)(implicit serializer: Serializer[T]): Int
+    // def receive[T](message: T)(implicit serializer: Serializer[T]): Int
     def receive[T: Serializer](message: T): Int
 
     def receive[T: Serializer](message: T, statusCode: Int): Int
@@ -30,20 +37,21 @@ object MagnetPattern extends App {
 
   /*
     Problems
+
+       1. Type erasure: (i.e. Generics types are erased at compile time)
+          if we define `def recieve(future: Future[P2PResponse]): Int` it will NOT Compile
+
+       2. Lifting doesn't works for all overloads (if we need higher order function)
+          val receiveFV = receive _ //<- `_` can mean statusCode, request, response etc So compiler is confused
+
+       3. Code Duplication
+          Prob implementation for all `receive` methods will be similar
+
+       4. Problems in Default arguments and Type inference
+         `Default arguments` can mean statusCode, request, response etc So compiler is confused
    */
 
-  // 1. Type erasure: (i.e. Generics types are erased at compile time)
-  // if we define `def recieve(future: Future[P2PResponse]): Int` it will NOT Compile
 
-  // 2. Lifting doesn't works for all overloads (if we need higher order function)
-
-  // val recieveFV = recieve _ //<- `_` can mean statusCode, request, response etc So compiler is confused
-
-  // 3. Code Duplication
-    // Prob implementation for all `recieve` methods will be similar
-
-  // 4. Problems in Default arguments and Type inference
-    // `Default arguments` can mean statusCode, request, response etc So compiler is confused
 
   // LETS RE WRITE ABOVE API
 
@@ -75,7 +83,7 @@ object MagnetPattern extends App {
   // a Single `receive` now acts as a CENTRE OF GRAVITY for all Overloads
 
 
-  /*
+  /**
     Benefits of MagnetPattern
    */
 
@@ -89,8 +97,8 @@ object MagnetPattern extends App {
     override def apply(): Int = 3
   }
 
-  println(receive(Future(new  P2PRequest)))
-  println(receive(Future(new P2PResponse)))
+  println(receive(Future(new P2PResponse))) // 2
+  println(receive(Future(new  P2PRequest))) // 3
 
   // 2 - lifting works
   trait MathLib {
@@ -121,8 +129,8 @@ object MagnetPattern extends App {
   // val receiveFV = receive _ //<- Compiler is confused here as `receive` contains Type Parameters
   // receiveFV(new P2PResponse) // Compiler Confused
 
-  println(addFV(1))
-  println(addFV("3"))
+  println(addFV(1)) // 2
+  println(addFV("3")) // 4
 
 
   /*
@@ -133,7 +141,7 @@ object MagnetPattern extends App {
     - Call by name does NOT work correctly
  */
 
-  /*
+  /**
     Exercise: Prove Call by name does NOT work correctly
    */
 
@@ -189,13 +197,6 @@ object MagnetPattern extends App {
  */
 
   // Only `lol` is printed twice because only `lol` is converted to `HandleMagnet ` Class
-
-
-
-
-
-
-
 
 }
 

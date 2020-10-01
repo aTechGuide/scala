@@ -1,8 +1,17 @@
 package in.kamranali.implicits
 
+/**
+  * Advance Scala Lesson 37 [Pimp My Library]
+  *
+  * TYPE ENRICHMENT
+  *
+  * Ref
+  * - https://www.udemy.com/course/advanced-scala/learn/lecture/11053832
+  */
+
 object PimpMyLibrary extends App {
 
-  /*
+  /**
     Enrichment allow us to decorate an existing classes (that we may NOT have access to) with additional methods and properties.
 
     There is a way to do this by
@@ -51,23 +60,9 @@ object PimpMyLibrary extends App {
   // 32.isOdd // Will NOT Compile
 
   // Because compiler wraps the 32 into whatever conversions it can access. BUT it doesn't do another search to enrich those as well.
-  // i.e it can wrap `32` in `RichBigInt` but then it will not wrape `RichBigInt` to `RicherBigInt` in another step
+  // i.e it can wrap `32` in `RichBigInt` but then it will not wrap `RichBigInt` to `RicherBigInt` in another step
 
-  /*
-    Exercise
-   */
-  // Enriching String Class
-
-  implicit class RichString(string: String) {
-    def asInt: Int = Integer.valueOf(string)
-
-    def encrypt(cypherDistance: Int): String = string.map(c => (c + cypherDistance).asInstanceOf[Char])
-  }
-
-  println("3".asInt + 4)
-  println("John".encrypt(2))
-
-  /*
+  /**
     Implicit Methods
    */
 
@@ -85,15 +80,27 @@ object PimpMyLibrary extends App {
 
   // above method is equivalent to `implicit class RichAltInt(value: Int)`
 
-  // Example 2 i.e. implicit conversion through Method is discouraged because if we have a bug its super hard to debug
+  // Implicit conversion through Method is discouraged because if we have a bug its super hard to debug
   // Let' say we have
   implicit def intToBoolean(i: Int): Boolean = i == 1
 
   val aConditionedValue = if (3) "OK" else "Something Wrong"
-  println(aConditionedValue)
+  println(aConditionedValue) // Something Wrong
 
 
+  /**
+    Exercise
+    */
+  // Exercise 1
+  // Enriching String Class
 
+  implicit class RichString(string: String) {
+    def asInt: Int = Integer.valueOf(string)
 
+    def encrypt(cypherDistance: Int): String = string.map(c => (c + cypherDistance).asInstanceOf[Char])
+  }
+
+  println("3".asInt + 4) // 7
+  println("John".encrypt(2)) // Lqjp
 
 }

@@ -1,5 +1,12 @@
 package in.kamranali.implicits
 
+/**
+  * Advance Scala Lesson 36 [Type Classes, Part 2]
+  *
+  * Ref
+  * - https://www.udemy.com/course/advanced-scala/learn/lecture/11053824#content
+  */
+
 object TypeClassesWithImplicits extends App {
 
   trait HTMLSerializer[T] { // <- TYPE Class with Type T
@@ -10,6 +17,10 @@ object TypeClassesWithImplicits extends App {
     def serialize[T](value: T)(implicit serializer: HTMLSerializer[T]): String = {
       serializer.serialize(value)
     }
+
+    // Factory method
+    // It surface out the implicit value HTMLSerializer of Type T
+    def apply[T](implicit serializer: HTMLSerializer[T]) = serializer
   }
 
   // Method 1 Explicitly passing `IntSerializer1`
@@ -17,16 +28,32 @@ object TypeClassesWithImplicits extends App {
     override def serialize(value: Int): String = s"<div> $value </div>"
   }
 
-  println(HTMLSerializer.serialize[Int](42)(IntSerializer1))
+  println(HTMLSerializer.serialize[Int](42)(IntSerializer1)) // <div> 42 </div>
 
   // Method 2 (Using Implicit so that compiler can figure it our for us)
   implicit object IntSerializer2 extends HTMLSerializer[Int] {
     override def serialize(value: Int): String = s"<div> $value </div>"
   }
 
-  println(HTMLSerializer.serialize[Int](42)) // compiler will figure our `IntSerializer2`
+  println(HTMLSerializer.serialize[Int](42)) // compiler will figure our `IntSerializer2` and prints "<div> 42 </div>"
+  // The advantage of this designing is that we can simply say `HTMLSerializer.serialize` any value for which we have defined an HTMLSerializer as an implicit object
+
+  // Better design will be to have an `applu` method inside HTMLSerializer which exposes the appropriate Serializer
+  println(HTMLSerializer[Int].serialize(42))
+  // ^ We have access to the entire type class interface so not only to the `serialise` method but maybe to other methods as well.
+
+  // Full Template of Type Class
+  trait MyTypeClassTemplate[T] {
+    def actions(value: T): String //<- All implementors of this type class template need to supply an implementation of this action
+  }
+
+  object MyTypeClassTemplate {
+    def apply[T](implicit instance: MyTypeClassTemplate[T]): MyTypeClassTemplate[T] = instance
+  }
+
 
   /*
+    Exercise
     Equality Type Class with implicit
    */
 
@@ -35,45 +62,34 @@ object TypeClassesWithImplicits extends App {
   }
 
   object Equal {
-    def apply[T](implicit  equalizer: Equal[T]) = equalizer
-
-    def checkEquality[T](a: T, b: T)(implicit equalizer: Equal[T]): Boolean = equalizer.apply(a, b)
-
-    // Above `apply` pattern surfaces the entire Equal Type Class. So that we can have access to all the methods in it.
+    def apply[T](a: T, b: T)(implicit equalizer: Equal[T]): Boolean = equalizer.apply(a, b)
   }
 
   implicit object IntEquality extends Equal[Int] {
     override def apply(a: Int, b: Int): Boolean = a == b
   }
-  println(Equal.checkEquality(3, 4))
 
-  // way 1
-  println(Equal.apply[Int].apply(3, 4))
+  println(Equal(3, 4)) // false
 
-  // way 2
-  println(Equal[Int].apply(3, 4))
-
-  // way 3
-  println(Equal[Int](IntEquality).apply(3, 4))
 
   /*
     AD - HOC polymorphism
+
+    Simple class polymorphism doesn't allow us to achieve this functionality as was the case with HTMLSerializer we wrote at the beginning of the type class
+    We achieve polymorphism in the sense that if two distinct or potentially unrelated types have equalizer's implemented then we can call this `Equal(T, T)` thing on them regardless of their type.
+
+    So we have `Equal` on `Int` for example and if we have an implicit equalizer for some other type e.g. `User` we can still call equal on those types as well.
+    This is Polymorphism because depending on the actual type of the values being compared the compiler takes care to fetch the correct type class instance for our types.
    */
 
-  trait AnotherEqual[T] {
-    def apply(a: T, b: T): Boolean
+  // Defining Equal for User Class
+  case class User(name: String, age: Int, email: String)
+  val john = User("John", 13, "johan@abc.con")
+  val sam = User("Sam", 1, "sam@abc.con")
+
+  implicit object UserAgeEquality extends Equal[User] {
+    override def apply(a: User, b: User): Boolean = a.age == b.age
   }
 
-  object AnotherEqual {
-    def apply[T](a: T, b: T)(implicit  equalizer: Equal[T]) = equalizer.apply(a,b)
-  }
-
-  implicit object IntAnotherEquality extends AnotherEqual[Int] {
-    override def apply(a: Int, b: Int): Boolean = a == b
-  }
-
-  // `AnotherEqual(3, 3)` -> AD - HOC polymorphism
-  // Here we have called `AnotherEqual` on Int but if we have `AnotherEqual[User]` we can call `AnotherEqual` on User as well
-  // This is polymorphism because depending on the actual TYPE of value being compared the compiler fetches the correct TYPE Class Instance for our types
-  println(AnotherEqual(3, 3))
+  println(Equal(john, sam)) // false
 }
