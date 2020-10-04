@@ -1,23 +1,30 @@
 package in.kamranali.AdvanceTypeSystem
 
-/*
-  Structural Types OR Type Refinements OR Compile Type Duck Typing
- */
+import scala.language.reflectiveCalls
+
+/**
+  * Advance Scala Lesson 48 [Structural Types OR Type Refinements OR Compile Time Duck Typing]
+  *
+  * Ref
+  * - https://www.udemy.com/course/advanced-scala/learn/lecture/11053868
+  *
+  */
+
 object StructuralTypes extends App {
 
-  /*
+  /**
     Structural Types
    */
   type JavaCloseable = java.io.Closeable
 
   class HipsterCloseable {
-    def close() = println("I'm closing")
+    def close(): Unit = println("I'm closing")
   }
 
   // Let's write a method that will accept `JavaCloseable` and `HipsterCloseable` without duplicating code
 
   // Option 1
-  //def closeQuietly(closeable: JavaCloseable Or HipsterCloseable) //<- Compilation Error
+  // def closeQuietly(closeable: JavaCloseable Or HipsterCloseable) //<- Compilation Error
 
   // Option 2 (via Structural Types)
 
@@ -26,7 +33,7 @@ object StructuralTypes extends App {
     def close(): Unit
   } // Structural Types
 
-  def closeQuietly(unifiedCloseable: UnifiedCloseable) = unifiedCloseable.close()
+  def closeQuietly(unifiedCloseable: UnifiedCloseable): Unit = unifiedCloseable.close()
 
   closeQuietly(new JavaCloseable {
     override def close(): Unit = println("closeQuietly")
@@ -36,7 +43,7 @@ object StructuralTypes extends App {
 
   // Even though `HipsterCloseable` and `JavaCloseable` are two COMPLETELY DIFFERENT. They just match the Type Structure that this method requires.
 
-  /*
+  /**
     TYPE Refinements
    */
 
@@ -55,19 +62,19 @@ object StructuralTypes extends App {
 
   // if
   class HipsterCloseable1 {
-    def close() = println("I'm closing")
+    def close(): Unit = println("I'm closing")
     def closedSilently(): Unit = println("Hipster Closes Silently")
   }
 
   // closeShh(new HipsterCloseable1) //<- Compilation Error because `HipsterCloseable1` does NOT originate from `JavaCloseable`
 
-  /*
-    Structural Types as Standalone types
+  /**
+    Using Structural Types as Standalone types
    */
   def altClose(closeable: {def close(): Unit}): Unit = closeable.close()
   // `{def close(): Unit}` is its own type
 
-  /*
+  /**
     DUCK Typing
    */
   type SoundMaker = {
@@ -86,7 +93,7 @@ object StructuralTypes extends App {
 
   // We can safely say
 
-  val dog: SoundMaker = new Dog
+  val dog: SoundMaker = new Dog // Dog instance being used as Structural Type SoundMaker
   val car: SoundMaker = new Car
 
   // Compiler is fine as long as Types on RHS confirm with the Structure defines on Type of LHS. Called as STATIC DUCK TYPING
@@ -94,9 +101,11 @@ object StructuralTypes extends App {
 
   // CAVEAT: Structural Types including Type Refinement are based on Reflection.
 
-  /*
+  /**
     Exercise
    */
+
+  // Exercise 1
   trait CBL[+T] {
     def head: T
     def tail: CBL[T]
@@ -106,14 +115,13 @@ object StructuralTypes extends App {
     def head: Brain = new Brain
   }
 
-  class Brain {
-    override def toString: String = "BRAINS"
-  }
+  class Brain { override def toString: String = "BRAINS" }
 
   def f[T](somethingWithAHead: {def head: T}): Unit = println(somethingWithAHead.head)
 
-  // Question: If f is compatible with CBL and Human ?? YES
+  // Question 1: If f is compatible with CBL and Human ?? YES
 
+  // Explanation
   case object CBNil extends CBL[Nothing] {
     override def head: Nothing = throw new NoSuchElementException
     def tail: CBL[Nothing] = throw new NoSuchElementException
@@ -122,26 +130,28 @@ object StructuralTypes extends App {
   case class CBCons[T](override val head: T, override val tail: CBL[T]) extends CBL[T]
 
   f(CBCons(2, CBNil))
-  f(new Human) // Compiler knows that Type T is Brain
+  f(new Human) // Compiler knows that Type T is Brain `f[Brain](new Human)`
 
 
-  // 2.
+  // Exercise 2
   object HeadEqualizer {
-    type Headable[T] = {def head: T}
+    type Headable[T] = { def head: T } // Structural Type with Type Parameter `T`
     def ===[T](a: Headable[T], b: Headable[T]): Boolean = a.head == b.head
   }
 
   // Question: HeadEqualizer is compatible with CBL and Human ?? YES
 
   val brainzList = CBCons(new Brain, CBNil)
-  HeadEqualizer.===(brainzList, new Human) // `head` of both argument return `Brain`
+  val human = new Human
+
+  HeadEqualizer.===(brainzList, human) // `head` of both argument return `Brain`
 
   // But it pose a serious Problem which is
   val stringList = CBCons("Brainz", CBNil)
-  HeadEqualizer.===(stringList, new Human) // Problem: Cause `head` of stringList returns String and `head` of `Human` return `Brain`
+  HeadEqualizer.===(stringList, human) // Problem: Cause `head` of stringList returns String and `head` of `Human` return `Brain`
 
   // This problem happened because Structural Equalization in `a.head == b.head` relies on reflection.
-  // Since it is based on Reflection Compiler erases the Type Parameter T in `===[T]`
+  // Since it is based on Reflection Compiler erases the Type Parameter T in `===[T]`. Which reduces the `===` method as `def ===(a: Headable, b: Headable): Boolean` which both `stringList` and `human` are
 
   // BE careful in using structural Types in methods with Type Parameters
 

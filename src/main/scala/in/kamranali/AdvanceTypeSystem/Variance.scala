@@ -1,5 +1,12 @@
 package in.kamranali.AdvanceTypeSystem
 
+/**
+  * Advance Scala Lesson 44 [Variance]
+  *
+  * Ref
+  * - https://www.udemy.com/course/advanced-scala/learn/lecture/11053854
+  */
+
 object Variance extends App {
 
   trait Animal
@@ -44,27 +51,35 @@ object Variance extends App {
     Various Type of Animal Cages with an Animal inside
    */
 
-  /*
-    FIELDS
+  /**
+    FIELDS (val)
     - Generic Type of `vals` in Fields accepts Invariant Types (Point 1)
     - Generic Type of `vals` in Fields are in a COVARIANT POSITION (Point 2)
    */
 
   // Point 1
-  class InvariantCage[T](val animal: T) //<- Compiler accepts Invariant type in `animal: T`
+  class InvariantCage[T](val animal: T) //<- Compiler accepts Invariant type in `animal: T` [Even though it is a COVARIANT Position]
 
-  // Point 2
-  // covariant positions
-  class CovariantCage[+T](val animal: T) //<- Generic Type of `vals` are in a COVARIANT POSITION i.e. compiler accept animal with Covariant Type
-  val ccagef: CovariantCage[Animal] = new CovariantCage[Cat](new Cat)
+  // Point 2 [covariant positions]
+  class CovariantCage[+T](val animal: T) //<- Generic Type of `val` (of fields) are in a COVARIANT POSITION i.e. compiler accept animal with Covariant Type
+  val ccagef1: CovariantCage[Animal] = new CovariantCage[Cat](new Cat)
+
+  class SuperCat extends Cat
+  val ccagef2: CovariantCage[Animal] = new CovariantCage[Cat](new SuperCat)
+
 
   // Point 3
-  // class ContravariantCage[-T](val animal: T) // <- Compilation Error, "contravariant type T occurs in covariant position in type => T of value animal"
-  // If above code would have compiled it means we can write
-    // val catCage: XCage[Cat] = new XCage[Animal](new Crocodile) as `Crocodile` extends `Animal`. Problem is we wanted specific cage of CAT but we are filling it with `Crocodile`
-
   /*
-    FIELDS
+     class ContravariantCage[-T](val animal: T) // <- Compilation Error, "contravariant type T occurs in covariant position in type => T of value animal"
+
+     If above code would have compiled it means we can write
+       val catCage: CovariantCage[Cat] = new CovariantCage[Animal](new Crocodile) as `Crocodile` extends `Animal`.
+
+     Problem is we wanted specific cage of CAT but we are filling it with `Crocodile`
+   */
+
+  /**
+    FIELDS (var)
     - Generic Type of `var` in Fields are in a CONTRAVARIANT POSITION (Point 1)
     - Generic Type of `var` in Fields are in a COVARIANT POSITION as well (Point 2)
 
@@ -72,51 +87,58 @@ object Variance extends App {
  */
 
   // Point 1
-  //class CovariantVariableCage[+T](var animal: T) //<- Compilation Error, "Covariant type T occurs in contravariant position in type T of value animal"
-  // Types of VARS are in CONTRAVARIANT POSITION
-  // If above code would have compiled it means we can write
-    // val ccage: CCage[Animal] = new CCage[Cat](new Cat)
-     //ccage.animal = new Crocodile
+  /*
+     class CovariantVariableCage[+T](var animal: T) //<- Compilation Error, "Covariant type T occurs in contravariant position in type T of value animal"
+     Types of VARS are in CONTRAVARIANT POSITION
+
+     If above code would have compiled it means we can write
+
+     val ccage: CovariantVariableCage[Animal] = new CovariantVariableCage[Cat](new Cat)
+     ccage.animal = new Crocodile [Problematic]
+   */
 
   // Point 2
-  // class ContraVariantVariableCage[-T](var animal: T) //<- Compilation Error, "contravariant type T occurs in covariant position in type => T of variable animal"
-  // Here `var animal: T` is in covariant position
-    // val catCage: XCage[Cat] = new XCage[Animal](new Crocodile)
+  /*
+      class ContraVariantVariableCage[-T](var animal: T) //<- Compilation Error, "contravariant type T occurs in covariant position in type => T of variable animal"
+      Here `var animal: T` is in covariant position
+
+      val catCage: ContraVariantVariableCage[Cat] = new ContraVariantVariableCage[Animal](new Crocodile) [Problematic]
+   */
 
   // Point 3
   class InvariantVariableCage[T](var animal: T) //<- Compiles
 
-  /*
-    Lets run through classical example of collections
-   */
-
-  /*
+  /**
     METHOD ARGUMENTS
     - METHOD ARGUMENTS i.e. `(animal: T)` are in CONTRAVARIANT Position (Point 2)
-    -
- */
+  */
   // Point 1
   trait AnotherCovariantCage[+T] {
     //def addAnimal(animal: T) //<- Compilation Error: "Covariant type T occurs in contravariant position in type T of value animal"
-    // It is same as saying
-      //var ccage: CCage[Animal] = new CCage[Dog]
-      //ccage.add(new Cat)
+    /*
+        It is same as saying
+
+        var ccage: AnotherCovariantCage[Animal] = new AnotherCovariantCage[Dog]
+        ccage.add(new Cat)
+     */
   }
 
   // Point 2
   class AnotherContravariantCage[-T] {
     def addAnimal(animal: T) = true // <- Compiles
   }
+
   // Hence we can say
   val acc: AnotherContravariantCage[Cat] = new AnotherContravariantCage[Animal]
   acc.addAnimal(new Cat) //<- we can only pass `CAT` or its super type as method arguments. And NOT Dog i.e. `acc.addAnimal(new Dog)` will NOT compile
+
   class Kitty extends Cat
   acc.addAnimal(new Kitty)
 
   // That is sad/painful problem because we often want to create a COVARIANT Collection. But then we can NOT add elements to them
   // We can solve this problem by following technique
   class MyList[+A] {
-    // def add(element: A): MyList[A] //<- Compilation Error
+    // def add(element: A): MyList[A] //<- Compilation Error[covariant type A occurs in contravariant position in type A]
     def add[B >: A](element: B): MyList[B] = new MyList[B]  // Hacking Compiler by a Technique known as "WIDENING the TYPE"
     // `B >: A` => B is super Type of A
   }
@@ -128,20 +150,24 @@ object Variance extends App {
 
   //Rule: Basically we want to keep the property that all the animals in the list have a common type
 
-  /*
+  /**
     RETURN TYPES
     - Method Return Types are in COVARIANT Position
    */
 
   class PetShop[-T] {
-    //def get(isItaPuppy: Boolean): T //<- Compilation error: "Contravariant type T occurs in covariant position in type T of value get"
-    // If above code compiles it will mean
-      //    val catShop = new PetShop[Animal] {
-      //        get(isItaPuppy: Boolean): Animal = new Cat
-      //      }
-      //
-      //    val dogShop: PetShop[Dog] = catShop
-      //    dogShop.get(true) // EVIL CAT
+    /*
+      def get(isItaPuppy: Boolean): T //<- Compilation error: "Contravariant type T occurs in covariant position in type T of value get"
+
+      If above code compiles it will mean
+
+      val catShop = new PetShop[Animal] {
+          get(isItaPuppy: Boolean): Animal = new Cat
+        }
+
+      val dogShop: PetShop[Dog] = catShop
+      dogShop.get(true) // EVIL CAT
+     */
 
     // To make above code compile we can do following hack
     def get[S <: T](isItaPuppy: Boolean, defaultAnimal: S): S = defaultAnimal
@@ -155,7 +181,7 @@ object Variance extends App {
   val bigFurry = shop.get(isItaPuppy = true, new TerraNova) // Compiles
 
 
-  /*
+  /**
     BIG RULES
     - Method Arguments are in CONTRAVARIANT Position
     - Return Types are in COVARIANT Position

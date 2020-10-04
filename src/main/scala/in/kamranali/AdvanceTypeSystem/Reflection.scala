@@ -1,9 +1,17 @@
 package in.kamranali.AdvanceTypeSystem
 
+/**
+  * Advance Scala Lesson 52 [Reflection]
+  *
+  * Ref
+  * - https://www.udemy.com/course/advanced-scala/learn/lecture/11053880
+  *
+  */
+
 object Reflection extends App {
 
-  //  How to instantiate a class Or invoke a method by calling its name DYNAMICALLY at Runtime ??
-    // This is problem of Reflection, which is the ability of JVM to operate on classes and instances and call methods at Runtime.
+  // How to instantiate a class Or invoke a method by calling its name DYNAMICALLY at Runtime ??
+  // This is problem of Reflection, which is the ability of JVM to operate on classes and instances and call methods at Runtime.
 
   case class Person(name: String) {
     def sayMyName(): Unit = println(s"Hi, my name is $name")

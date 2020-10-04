@@ -1,5 +1,15 @@
 package in.kamranali.AdvanceTypeSystem
 
+import scala.language.higherKinds
+
+/**
+  * Advance Scala Lesson 51 [Higher Kinded Types]
+  *
+  * Ref
+  * - https://www.udemy.com/course/advanced-scala/learn/lecture/11053878
+  *
+  */
+
 object HigherKindedTypes extends App {
 
   /*
@@ -45,17 +55,17 @@ object HigherKindedTypes extends App {
     def map[B](f: A => B): F[B]
   }
 
-  class MonadList[A](list: List[A]) extends Monad[List, A] { //<- here `F[_]` is `List` Type. Basically its an abstraction over list of Int
+  class MonadList[A](list: List[A]) extends Monad[List, A] { //<- here `F[_]` is `List` Type. Basically its an abstraction over list of A
     override def flatMap[B](f: A => List[B]): List[B] = list.flatMap(f)
     override def map[B](f: A => B): List[B] = list.map(f)
   }
 
   val monadList = new MonadList(List(1,2,3))
   monadList.flatMap(x => List(x, x+ 1))  //<- it returns List[Int]
-  // So from Monad[List, Int] we return by flatmapping List[Int]
+  // So from Monad[List, Int] we return by flat mapping List[Int]
 
   monadList.map(_ * 2) // return List[Int]
-  // So from Monad[List, Int] we return by flatmapping List[Int]
+  // So from Monad[List, Int] we return by flat mapping List[Int]
 
   def multiple[F[_], A, B](ma: Monad[F, A], mb: Monad[F, B]): F[(A, B)] = // where `F` is for e.g. `List` Type itself
     for {
@@ -65,7 +75,7 @@ object HigherKindedTypes extends App {
 
   // Later we can say
   val solList = multiple(new MonadList(List(1,2)), new MonadList(List("A","B")))
-  println(solList)
+  println(solList) // List((1,A), (1,B), (2,A), (2,B))
 
   // Similarly now we can define a Monad for Option as well
   class MonadOption[A](option: Option[A]) extends Monad[Option, A] {
@@ -74,7 +84,7 @@ object HigherKindedTypes extends App {
   }
 
   val solOption = multiple(new MonadOption[Int](Some(2)), new MonadOption[String](Some("scala")))
-  println(solOption)
+  println(solOption) // Some((2,scala))
 
   // We can clearly see we have ONLY ONE Definition of `multiple` for all Monad Kinds e.g. `MonadList`, `MonadOption` etc. All we need to do is to use a Wrapper (e.g. Monad) instead of those types e.g. List, Option
 
@@ -84,13 +94,7 @@ object HigherKindedTypes extends App {
 
   // By using implicit parameters
 
-  def multiple2[F[_], A, B](implicit ma: Monad[F, A], mb: Monad[F, B]): F[(A, B)] = // where `F` is for e.g. `List` Type itself
-    for {
-      a <- ma
-      b <- mb
-    } yield (a,b)
-
-  implicit class MonadList2[A](list: List[A]) extends Monad[List, A] { //<- here `F[_]` is `List` Type. Basically its an abstraction over list of Int
+  implicit class MonadList2[A](list: List[A]) extends Monad[List, A] {
     override def flatMap[B](f: A => List[B]): List[B] = list.flatMap(f)
     override def map[B](f: A => B): List[B] = list.map(f)
   }
@@ -100,12 +104,28 @@ object HigherKindedTypes extends App {
     override def map[B](f: A => B): Option[B] = option.map(f)
   }
 
+  def multiple2[F[_], A, B](ma: Monad[F, A], mb: Monad[F, B]): F[(A, B)] =
+    for {
+      a <- ma
+      b <- mb
+    } yield (a,b)
+
+  /*
+      trait Monad[F[_], A] {
+        def flatMap[B](f: A => F[B]): F[B]
+        def map[B](f: A => B): F[B]
+      }
+
+      Our Monad trait now behaves as Higher Kinded Type Class
+
+
+   */
   // So now we can say
 
   val solList2 = multiple2(List(1,2), List("A","B"))
-  println(solList2)
+  println(solList2) // List((1,A), (1,B), (2,A), (2,B))
 
   val solOption2 = multiple2(Some(2), Some("scala"))
-  println(solOption2)
+  println(solOption2) // Some((2,scala))
 
 }

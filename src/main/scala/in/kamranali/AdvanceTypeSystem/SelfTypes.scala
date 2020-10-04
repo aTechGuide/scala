@@ -1,5 +1,12 @@
 package in.kamranali.AdvanceTypeSystem
 
+/**
+  * Advance Scala Lesson 49 [Self Types]
+  *
+  * Ref
+  * - https://www.udemy.com/course/advanced-scala/learn/lecture/11053872
+  *
+  */
 
 object SelfTypes extends App {
   /*
@@ -22,9 +29,11 @@ object SelfTypes extends App {
     override def sing(): Unit = println("sing")
   }
 
-//  class Vocalist extends Singer { //<- Compilation Error
-//    override def sing(): Unit = ???
-//  }
+  /*
+      class Vocalist extends Singer { //<- Compilation Error
+        override def sing(): Unit = ???
+      }
+   */
 
   // Valid Assignment 1
   val jamesHetfield = new Singer with Instrumentalist {
@@ -37,31 +46,31 @@ object SelfTypes extends App {
     override def play(): Unit = println("Guitar")
   }
 
-  val ericClaption = new Guitarist with Singer {
+  val ericClapton = new Guitarist with Singer {
     override def sing(): Unit = println("sing")
   }
 
-  // Self Types Vs Inheritance
+  /**
+    * Self Types Vs Inheritance
+    */
   class A
   class B extends A // => B MUST also be an A
 
   trait T
-  trait S {self: T =>} // S REQUIRES a T
+  trait S { self: T => } // S REQUIRES a T
 
   // Common Usage
-  /*
+  /**
     CAKE PATTERN known as "Dependency Injection" in Java World
    */
 
   // CLASSICAL Dependency Injection in JAVA
-  class Component {
-    // API
-  }
+  class Component { /* API */ }
 
   class ConcreteComponentA extends Component
   class ConcreteComponentB extends Component
 
-  class DependentComponent(val component: Component) // <- this will receive either `ConcreteComponentA` OR `ConcreteComponentB` at Runtime
+  class DependentComponent( val component: Component ) // <- this will receive either `ConcreteComponentA` OR `ConcreteComponentB` at Runtime
 
   // Dependency Injection In Scala
   trait ScalaComponent {
@@ -69,12 +78,14 @@ object SelfTypes extends App {
     def action(x: Int): String
   }
 
-  trait ScalaDependentComponent {self: ScalaComponent =>
+  trait ScalaDependentComponent { self: ScalaComponent =>
     def dependentAction(x: Int): String = action(x) + "this rocks" //<- We are calling `action(x)` as if it was `ScalaDependentComponent` own method
   }
 
-  // Example of Backing : We have a Server Side Rendering App.
-    // Let's Model elements of the Page on the backend
+  /**
+    Example: We have a Server Side Rendering App.
+   */
+  // Let's Model elements of the Page on the backend
 
   // layer 1 of small components
   trait Picture extends ScalaComponent
@@ -86,25 +97,28 @@ object SelfTypes extends App {
   trait Analytics extends ScalaDependentComponent with Stats
 
   // layer 3
-  trait ScalaApplication {self: ScalaDependentComponent =>}
+  trait ScalaApplication { self: ScalaDependentComponent => }
 
   trait AnalyticsApp extends ScalaApplication with Analytics
 
-  // Cake Pattern VS Dependency Injection
-    // In DI, Dependencies are injected by a framework at Runtime
-    // In Cake Pattern, Dependencies are checked at Compile Time
-
   /*
+     Cake Pattern VS Dependency Injection
+      - In DI, Dependencies are injected by a framework at Runtime
+      - In Cake Pattern, Dependencies are checked at Compile Time
+   */
+
+  /**
     Self Types allow us to define seemingly Cyclical Dependencies
    */
 
-  // Compilation Error : Error:(102, 11) illegal cyclic reference
-//  class X extends Y
-//  class Y extends X
+  /*
+      class X extends Y
+      class Y extends X
+
+      Compilation Error : Error:(102, 11) illegal cyclic reference
+   */
 
   // Following code will compile BECAUSE Cyclic Dependency is only Apparent
   trait X {self: Y =>}
   trait Y {self: X =>}
-
-
 }

@@ -1,9 +1,17 @@
 package in.kamranali.AdvanceTypeSystem
 
+/**
+  * Advance Scala Lesson 50 [F-Bounded Polymorphism]
+  *
+  * Ref
+  * - https://www.udemy.com/course/advanced-scala/learn/lecture/11053876
+  *
+  */
+
 object FBoundedPolymorphism extends App {
 
   /*
-    PROBLEM: How to FORCE a method in the Super Type to accept Current Type
+    PROBLEM: How to FORCE a method in the Super Type to accept "Current Type"
    */
   trait Animal {
     def breed: List[Animal]
@@ -17,7 +25,7 @@ object FBoundedPolymorphism extends App {
     override def breed: List[Animal] = ??? //<- We want here List[Dog]
   }
 
-  // Sol 1 - Naive
+  // Solution 1 - Naive
   trait Animal1 {
     def breed: List[Animal1]
   }
@@ -38,7 +46,7 @@ object FBoundedPolymorphism extends App {
 
   // So how to make compiler force type correctness on us. So that we don't make mistake
 
-  // Sol 2
+  // Solution 2
   trait Animal2[A <: Animal2[A]] { // Recursive Type: F-Bounded Polymorphism
     def breed: List[Animal2[A]]
   }
@@ -53,19 +61,19 @@ object FBoundedPolymorphism extends App {
     //override def breed: List[Animal2[Cat2]] = ??? //<- Compilation Error
   }
 
-  /*
+  /**
     Usage in ORM, Frameworks and APIs
    */
   trait Entity[E <: Entity[E]] // ORMs
 
-  /*
+  /**
     Usage in Comparison
    */
   class Person extends Comparable[Person] {
     override def compareTo(o: Person): Int = ???
   }
 
-  /*
+  /**
     Limitations
    */
   class Crocodile extends Animal2[Dog2] {
@@ -74,9 +82,8 @@ object FBoundedPolymorphism extends App {
 
   // So how to enforce the Class that I'm defining i.e. `Crocodile` and the Type i.e. `Dog2` that I'm annotating with are the Same
 
-    // which introduces
-
-  // Sol 3 - F Bounded Polymorphism + Self Types
+  // which introduces
+  // Solution 3 - F Bounded Polymorphism + Self Types
 
   trait Animal3[A <: Animal3[A]] { self: A =>
     def breed: List[Animal3[A]]
@@ -90,12 +97,15 @@ object FBoundedPolymorphism extends App {
     override def breed: List[Animal3[Dog3]] = ??? //<- A Valid Code
   }
 
-  // So if I say
-//  class Crocodile extends Animal3[Dog3] {
-//    override def breed: List[Animal3[Dog3]] = ???
-//  } //<- Compilation Error
+  /*
+    So if I say
+    class Crocodile extends Animal3[Dog3] {
+      override def breed: List[Animal3[Dog3]] = ???
+    } //<- Compilation Error. [As we have enforces that Animal[A] must also be an A via self Type]
+   */
 
-  // Limitation
+
+  // Limitation 2
   trait Fish extends Animal3[Fish]
 
   trait Shark extends Fish {
@@ -113,10 +123,10 @@ object FBoundedPolymorphism extends App {
 
   // And we have reached its FUNDAMENTAL LIMITATION. Once we bring class hierarchy down one level F Bounded Polymorphism Stops being effective
 
-  /*
+  /**
     Exercise: How to strictly enforce the breed method to return correct Type
    */
-  // Using Type Classes (Sol 4)
+  // Using Type Classes (Solution 4)
   trait Animal4
 
   // Type Class description
@@ -160,14 +170,16 @@ object FBoundedPolymorphism extends App {
 
   val cat = new Cat4
   // cat.breed //<- Compilation Error: "could not find implicit value for parameter canBreed"
-  // i.e. the `cat` companion object does NOT have the right Type Class instance Type
-    // Basically compiler tried use `CanBreedOps` with `Cat4` Type AND FAILED to find an implicit `CanBreed[Cat4]`
+  // i.e. the `Cat4` companion object does NOT have the right Type Class instance Type
+  // Basically compiler tried use `CanBreedOps` with `Cat4` Type AND FAILED to find an implicit `CanBreed[Cat4]`
 
-  // Criticism of Sol 4
-    // We do NOT have `breed` method inside `Animal` Or any of its Sub types
+  /*
+     Criticism of Solution 4
+     - We do NOT have `breed` method inside `Animal` Or any of its Sub types
+   */
 
   // SOLUTION 5 Making Animal as Type class
-    // Comment solution 4 and then uncomment Solution 5 for Solution 5 to work correctly
+  // Comment solution 4 and then uncomment Solution 5 for Solution 5 to work correctly
   /*
   trait Animal5[A] { // pure type classes
     def breed(a: A): List[A]
