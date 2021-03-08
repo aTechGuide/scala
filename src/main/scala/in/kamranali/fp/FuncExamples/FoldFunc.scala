@@ -3,7 +3,9 @@ package in.kamranali.fp.FuncExamples
 /**
   * The fold method takes an associative binary operator function as parameter and will use it to collapse elements from the collection.
   *
-  * The fold method allows you to also specify an initial value.
+  * The fold method allows you to also specify an initial value, which is a neutral element for the fold operation;
+  * may be added to the result an arbitrary number of times, and must not change the result
+  * (e.g., `Nil` for list concatenation, 0 for addition, or 1 for multiplication).
   *
   * - def fold[A1 >: A](z: A1)(op: (A1, A1) ⇒ A1): A1
   *
@@ -13,8 +15,10 @@ package in.kamranali.fp.FuncExamples
 object FoldFunc extends App {
 
   val prices = Seq(1.1, 2.0, 3.4)
+  val items = Seq[Int](1, 2, 3)
 
   println( prices.fold(0.0)(_ + _)) // 6.5
+  // println(items.fold[String]("")((accum, item) => ))
 
 }
 
@@ -41,7 +45,8 @@ object FoldLeftFunc extends App {
   val items = Seq[Int](1, 2, 3)
   val flowers = Seq[String]("Rose", "Daisy", "lotus")
 
-  println( items.foldLeft[Double](0.0)(_ + _)) // 6.0
+  println( items.foldLeft[Int](100)(_ + _)) // Different Seed value
+  println( items.foldLeft[Double](0.0)(_ + _)) // 6.0 [Different Type]
   println(flowers.foldLeft[String]("")((acc, flower) => acc + flower + " flower ")) // Rose flower Daisy flower lotus flower
 
 }

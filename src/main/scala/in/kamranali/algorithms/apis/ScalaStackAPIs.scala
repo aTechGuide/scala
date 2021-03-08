@@ -11,22 +11,23 @@ object ScalaStackAPIs extends App {
 
   var st = List.empty[Int]
 
-  // Push
+  println("Pushing Elements \n")
   st = 0 :: st
   st = 1 :: st
   st = 2 :: st
 
   println(st)
 
-  // Pop
+  println("Popping Elements \n")
+
+  println("First Pop Method \n")
   val data = st.head
   st = st.tail
-
 
   println(data)
   println(st)
 
-  // Pop 2
+  println("Second Pop Method \n")
   val data1 :: st1 = st
 
   println(data1)
