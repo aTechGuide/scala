@@ -2,12 +2,17 @@ package in.kamranali.concurrency
 
 /**
   * [Concurrency] Chapter 10: Parallel Collections
+  *
+  * Parallel Collections is a separate module in Scala 2.13
+  * - https://github.com/scala/scala-parallel-collections
   */
 
 import java.util.concurrent.ForkJoinPool
 
 import scala.collection.parallel.ForkJoinTaskSupport
 import scala.collection.parallel.immutable.ParVector
+
+import scala.collection.parallel.CollectionConverters._ // for .par to work
 
 object ParallelUtils extends App {
 

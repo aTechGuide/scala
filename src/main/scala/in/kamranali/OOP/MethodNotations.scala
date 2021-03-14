@@ -1,5 +1,7 @@
 package in.kamranali.OOP
 
+import scala.language.postfixOps
+
 object MethodNotations extends App {
 
   class Person(val name: String, favouriteMovie: String) {

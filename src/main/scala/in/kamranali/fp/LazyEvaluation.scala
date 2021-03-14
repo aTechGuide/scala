@@ -1,7 +1,5 @@
 package in.kamranali.fp
 
-import scala.collection.generic.FilterMonadic
-
 /**
   * Advance Scala Lesson 15 [LazyEvaluation]
   *
@@ -91,8 +89,8 @@ object LazyEvaluation extends App {
   println(gt20)
 
   val lt30lazy = numbers.withFilter(lessThan30) // lazy vals under the hood
-  val gt20Lazy: FilterMonadic[Int, List[Int]] = lt30lazy.withFilter(greaterThan20)
-  // FilterMonadic is just a wrapper over the original collection with lazy vals under the hood.
+  val gt20Lazy = lt30lazy.withFilter(greaterThan20)
+
 
   // `withFilter` uses lazy values under the hood
   println()
