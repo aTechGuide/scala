@@ -18,6 +18,9 @@ sealed abstract class RList[+T] {
 
   // Reverse the List
   def reverse: RList[T]
+
+  // concatenate another list to this one
+  def ++[S >: T](anotherList: RList[S]): RList[S]
 }
 
 case object RNil extends RList[Nothing] {
@@ -29,6 +32,8 @@ case object RNil extends RList[Nothing] {
   override def apply(index: Int): Nothing = throw new NoSuchElementException
   override def length: Int = 0
   override def reverse: RList[Nothing] = this
+
+  override def ++[S >: Nothing](anotherList: RList[S]): RList[S] = anotherList
 }
 
 case class ::[+T](override val head: T, override val tail: RList[T]) extends RList[T] {
@@ -81,6 +86,17 @@ case class ::[+T](override val head: T, override val tail: RList[T]) extends RLi
     reverseTailrec(this, RNil)
   }
 
+  // Complexity -> O(anotherList) + O(N + anotherList)
+  override def ++[S >: T](anotherList: RList[S]): RList[S] = {
+    @tailrec
+    def concatTailRec(remainingList: RList[S], accum: RList[S]): RList[S] = {
+      if (remainingList.isEmpty) accum
+      else concatTailRec(remainingList.tail, remainingList.head :: accum)
+    }
+
+    concatTailRec(anotherList, this.reverse).reverse
+  }
+
 }
 
 object RList {
@@ -102,5 +118,6 @@ object ListProblems extends App {
   println(aSmallList.length) // 3
   println(aSmallList.reverse) // [3, 2, 1]
   println(RList.from(1 to 5)) // [1, 2, 3, 4, 5]
+  println(aSmallList ++ (4 :: 5 :: RNil))
 
 }
