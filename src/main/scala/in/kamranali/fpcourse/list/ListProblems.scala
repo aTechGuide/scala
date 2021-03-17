@@ -10,7 +10,11 @@ sealed abstract class RList[+T] {
   // Scala methods ending with :: are right associative
   def ::[S >: T](element: S): RList[S] = new ::(element, this) // Common impl for both RNil and Cons
 
+  // GET K-th element
   def apply(index: Int): T
+
+  // Calculate Length of List
+  def length: Int
 }
 
 case object RNil extends RList[Nothing] {
@@ -19,9 +23,8 @@ case object RNil extends RList[Nothing] {
   override def isEmpty: Boolean = true
 
   override def toString: String = "[]"
-
-  // GET K-th element
   override def apply(index: Int): Nothing = throw new NoSuchElementException
+  def length: Int = 0
 }
 
 case class ::[+T](override val head: T, override val tail: RList[T]) extends RList[T] {
@@ -52,6 +55,17 @@ case class ::[+T](override val head: T, override val tail: RList[T]) extends RLi
     else applyTailRec(0, this)
   }
 
+  // Complexity -> O(N)
+  def length: Int = {
+    @tailrec
+    def lengthTailRec(remaining: RList[T], accumulator: Int): Int = {
+      if (remaining.isEmpty) accumulator
+      else lengthTailRec(remaining.tail, accumulator + 1)
+    }
+
+    lengthTailRec(this, 0)
+  }
+
 }
 
 object ListProblems extends App {
@@ -59,5 +73,6 @@ object ListProblems extends App {
   val aSmallList = 1 :: 2 :: 3 :: RNil // ::(1, ::(2, ::(3, RNil)))
   println(aSmallList)
   println(aSmallList(2)) // 3
+  println(aSmallList.length) // 3
 
 }
