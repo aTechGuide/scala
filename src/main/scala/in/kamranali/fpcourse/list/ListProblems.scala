@@ -26,6 +26,11 @@ sealed abstract class RList[+T] {
   // remove the Kth Element
   def removeAt(index: Int): RList[T]
 
+  // Implement the Big 3
+  def map[S](f: T => S): RList[S]
+  def flatMap[S](f: T => RList[S]): RList[S]
+  def filter(f: T => Boolean): RList[T]
+
 }
 
 case object RNil extends RList[Nothing] {
@@ -39,6 +44,9 @@ case object RNil extends RList[Nothing] {
   override def reverse: RList[Nothing] = this
   override def ++[S >: Nothing](anotherList: RList[S]): RList[S] = anotherList
   override def removeAt(index: Int): RList[Nothing] = this
+  override def map[S](f: Nothing => S): RList[S] = this
+  override def flatMap[S](f: Nothing => RList[S]): RList[S] = this
+  override def filter(f: Nothing => Boolean): RList[Nothing] = this
 }
 
 case class ::[+T](override val head: T, override val tail: RList[T]) extends RList[T] {
@@ -116,6 +124,43 @@ case class ::[+T](override val head: T, override val tail: RList[T]) extends RLi
     else removeTailRec(0, this, RNil)
   }
 
+  // Complexity -> O(N)
+  override def map[S](f: T => S): RList[S] = {
+    @tailrec
+    def mapTailrec(remaining: RList[T], accumulator: RList[S]): RList[S] = {
+
+      if (remaining.isEmpty) accumulator.reverse
+      else mapTailrec(remaining.tail, f(remaining.head) :: accumulator)
+    }
+
+    mapTailrec(this, RNil)
+  }
+
+  // Complexity -> O(N * M)
+  override def flatMap[S](f: T => RList[S]): RList[S] = {
+    @tailrec
+    def flatMapTailrec(remaining: RList[T], accumulator: RList[S]): RList[S] = {
+
+      if (remaining.isEmpty) accumulator.reverse
+      else flatMapTailrec(remaining.tail, f(remaining.head).reverse ++ accumulator)
+    }
+
+    flatMapTailrec(this, RNil)
+  }
+
+  // Complexity -> O(N)
+  override def filter(predicate: T => Boolean): RList[T] = {
+    @tailrec
+    def filterTailrec(remaining: RList[T], predecessors: RList[T]): RList[T] = {
+
+      if (remaining.isEmpty) predecessors.reverse
+      else if (predicate(remaining.head)) filterTailrec(remaining.tail, remaining.head :: predecessors)
+      else filterTailrec(remaining.tail, predecessors)
+    }
+
+    filterTailrec(this, RNil)
+  }
+
 }
 
 object RList {
@@ -139,5 +184,8 @@ object ListProblems extends App {
   println(RList.from(1 to 5)) // [1, 2, 3, 4, 5]
   println(aSmallList ++ (5 :: 6 :: RNil))
   println(aSmallList.removeAt(1))
+  println(aSmallList.map(_ * 2))
+  println(aSmallList.flatMap(x => x :: (2 * x) :: RNil))
+  println(aSmallList.filter(_ %2 == 1))
 
 }
