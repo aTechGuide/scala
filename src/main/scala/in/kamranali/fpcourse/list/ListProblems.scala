@@ -1,6 +1,7 @@
 package in.kamranali.fpcourse.list
 
 import scala.annotation.tailrec
+// Where ever recursive call occurs its the last expression of its code branch
 
 sealed abstract class RList[+T] {
   def head: T
@@ -21,6 +22,10 @@ sealed abstract class RList[+T] {
 
   // concatenate another list to this one
   def ++[S >: T](anotherList: RList[S]): RList[S]
+
+  // remove the Kth Element
+  def removeAt(index: Int): RList[T]
+
 }
 
 case object RNil extends RList[Nothing] {
@@ -32,8 +37,8 @@ case object RNil extends RList[Nothing] {
   override def apply(index: Int): Nothing = throw new NoSuchElementException
   override def length: Int = 0
   override def reverse: RList[Nothing] = this
-
   override def ++[S >: Nothing](anotherList: RList[S]): RList[S] = anotherList
+  override def removeAt(index: Int): RList[Nothing] = this
 }
 
 case class ::[+T](override val head: T, override val tail: RList[T]) extends RList[T] {
@@ -97,6 +102,20 @@ case class ::[+T](override val head: T, override val tail: RList[T]) extends RLi
     concatTailRec(anotherList, this.reverse).reverse
   }
 
+  // Complexity -> O(N)
+  def removeAt(index: Int): RList[T] = {
+    @tailrec
+    def removeTailRec(idx: Int, remaining: RList[T], predecessors: RList[T]): RList[T] = {
+
+      if (remaining.isEmpty) predecessors.reverse
+      else if (idx == index) predecessors.reverse ++ remaining.tail
+      else removeTailRec(idx + 1, remaining.tail, remaining.head :: predecessors) // Since we have only prepend Operator
+    }
+
+    if (index < 0) this
+    else removeTailRec(0, this, RNil)
+  }
+
 }
 
 object RList {
@@ -112,12 +131,13 @@ object RList {
 }
 object ListProblems extends App {
 
-  val aSmallList = 1 :: 2 :: 3 :: RNil // ::(1, ::(2, ::(3, RNil)))
+  val aSmallList = 1 :: 2 :: 3 :: 4 :: RNil // ::(1, ::(2, ::(3, RNil)))
   println(aSmallList)
   println(aSmallList(2)) // 3
   println(aSmallList.length) // 3
   println(aSmallList.reverse) // [3, 2, 1]
   println(RList.from(1 to 5)) // [1, 2, 3, 4, 5]
-  println(aSmallList ++ (4 :: 5 :: RNil))
+  println(aSmallList ++ (5 :: 6 :: RNil))
+  println(aSmallList.removeAt(1))
 
 }
