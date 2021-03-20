@@ -1,4 +1,4 @@
-name := "scala"
+name := "scala_2"
 
 version := "0.1"
 
