@@ -1,0 +1,11 @@
+.idea/*
+scala.iml
+out/*
+
+Testing.scala
+target/*
+project/target/*
+project/project/target/*
+src/main/scala/in/kamranali/test.scala
+
+
