@@ -23,6 +23,18 @@ sealed abstract class BTree[+T] {
 
   // Collect all the nodes at a given level
   def collectNodes(level: Int): List[BTree[T]]
+
+  // Mirror a tree
+  /*
+        _____1_____                     _____1_____
+       /           \                   /           \
+     __2__       __6__       ->      __6__       __2__
+    /     \     /     \             /     \     /     \
+    3     4     7     8             8     7     4     3
+           \                                   /
+            5                                 5
+   */
+  def mirror: BTree[T]
 }
 
 case object BEnd extends BTree[Nothing] {
@@ -36,6 +48,7 @@ case object BEnd extends BTree[Nothing] {
   override def leafCount: Int = 0
   override val size: Int = 0
   override def collectNodes(level: Int): List[BTree[Nothing]] = List()
+  override def mirror: BTree[Nothing] = BEnd
 }
 
 case class BNode[+T](override val value: T, override val left: BTree[T], override val right: BTree[T]) extends BTree[T] {
@@ -84,6 +97,61 @@ case class BNode[+T](override val value: T, override val left: BTree[T], overrid
 
   }
 
+  override def mirror: BTree[T] = {
+//    def mirrorPostOrder(original: BTree[T], mirror: BTree[T]): BTree[T] = {
+//      if (original.isEmpty) BEnd
+//      else {
+//        val left = mirrorPostOrder(original.right, mirror)
+//        val right = mirrorPostOrder(original.left, mirror)
+//
+//        BNode(original.value, left, right)
+//      }
+//    }
+//    mirrorPostOrder(this, BEnd)
+
+    /*
+          _____1_____                     _____1_____
+         /           \                   /           \
+       __2__       __6__       ->      __6__       __2__
+      /     \     /     \             /     \     /     \
+      3     4     7     8             8     7     4     3
+             \                                   /
+              5                                 5
+      mt([1], [], []) =
+      mt([2,6,1], [1], []) =
+      mt([3,4,2,6,1], [1,2], []) =
+      mt([4,2,6,1], [1,2], [3]) =
+      mt([End, 5, 4,2,6,1], [1,2,4], [3]) =
+      mt([5,4,2,6,1], [1,2,4], [End, 3]) =
+      mt([4,2,6,1], [1,2,4], [5, End, 3]) =
+      mt([2,6,1], [1,2,4], [(4 5 End), 3]) =
+      mt([6,1], [1,2,4], [(2 (4 5 End) 3)] =
+      mt([7,8,6,1], [1,2,4,6], [(2 (4 5 End) 3)]) =
+      mt([8,6,1], [1,2,4,6], [7, (2 (4 5 End) 3)]) =
+      mt([6,1], [1,2,4,6], [8,7, (2 (4 5 End) 3)]) =
+      mt([1], [1,2,4,6], [(6 8 7), (2 (4 5 End) 3)]) =
+      mt([], [1,2,4,6], [(1 (6 8 7) (2 (4 5 End) 3)]) =
+      (1 (6 8 7) (2 (4 5 End) 3)
+
+      Complexity: O(N)
+     */
+    @tailrec
+    def mirrorTailrec(todo: List[BTree[T]], expanded: Set[BTree[T]], done: List[BTree[T]]): BTree[T] = {
+      if (todo.isEmpty) done.head
+      else if (todo.head.isEmpty || todo.head.isLeaf)
+        mirrorTailrec(todo.tail, expanded, todo.head :: done)
+      else if (expanded.contains(todo.head)) {
+        val node = BNode(todo.head.value, done.head, done.tail.head)
+        mirrorTailrec(todo.tail, expanded, node :: done.tail.tail)
+      } else {
+        val newTodo = todo.head.left :: todo.head.right :: todo
+        mirrorTailrec(newTodo, expanded + todo.head, done)
+      }
+    }
+
+    mirrorTailrec(List(this), Set(), List())
+  }
+
 
 }
 object BinaryTreeProblems extends App {
@@ -111,6 +179,7 @@ object BinaryTreeProblems extends App {
   println(tree.size)
   println(degenerate.size)
   println(tree.collectNodes(2).map(_.value))
+  println(tree.mirror)
 
 
 }
