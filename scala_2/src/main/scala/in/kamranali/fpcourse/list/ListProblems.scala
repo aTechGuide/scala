@@ -31,6 +31,15 @@ sealed abstract class RList[+T] {
   def flatMap[S](f: T => RList[S]): RList[S]
   def filter(f: T => Boolean): RList[T]
 
+  /**
+    * Medium
+    */
+  // Run length Encoding: Count consecutive duplicates and return them in a list of tuples
+  def rle: RList[(T, Int)]
+
+  // Given a list duplicate each element a number of times in a row
+  def duplicateEach(k: Int): RList[T]
+
 }
 
 case object RNil extends RList[Nothing] {
@@ -47,6 +56,8 @@ case object RNil extends RList[Nothing] {
   override def map[S](f: Nothing => S): RList[S] = this
   override def flatMap[S](f: Nothing => RList[S]): RList[S] = this
   override def filter(f: Nothing => Boolean): RList[Nothing] = this
+  override def rle: RList[(Nothing, Int)] = this
+  override def duplicateEach(k: Int): RList[Nothing] = this
 }
 
 case class ::[+T](override val head: T, override val tail: RList[T]) extends RList[T] {
@@ -161,6 +172,36 @@ case class ::[+T](override val head: T, override val tail: RList[T]) extends RLi
     filterTailrec(this, RNil)
   }
 
+  // Complexity -> O(N)
+  override def rle: RList[(T, Int)] = {
+    @tailrec
+    def rleTailrec(remaining: RList[T], res: RList[(T, Int)]): RList[(T, Int)] = {
+      if (remaining.isEmpty) res.reverse
+      else if (res.isEmpty) rleTailrec(remaining.tail, (remaining.head, 1) :: res)
+      else {
+        val newRes = if (res.head._1 != remaining.head) (remaining.head, 1) :: res
+        else (remaining.head, res.head._2 + 1) :: res.tail
+
+        rleTailrec(remaining.tail, newRes)
+      }
+    }
+
+    rleTailrec(this, RNil)
+  }
+
+  // Complexity -> O(N * K)
+  override def duplicateEach(k: Int): RList[T] = {
+    @tailrec
+    def deTailrec(remaining: RList[T], currElement: T, nDuplications: Int, accumulator: RList[T]): RList[T] = {
+      if (remaining.isEmpty && nDuplications == k) accumulator.reverse
+      else if (remaining.isEmpty) deTailrec(remaining, currElement, nDuplications + 1, currElement :: accumulator)
+      else if (nDuplications == k) deTailrec(remaining.tail, remaining.head, 0, accumulator)
+      else deTailrec(remaining, currElement, nDuplications + 1, currElement :: accumulator)
+
+    }
+    deTailrec(this.tail, this.head, 0, RNil)
+  }
+
 }
 
 object RList {
@@ -177,15 +218,25 @@ object RList {
 object ListProblems extends App {
 
   val aSmallList = 1 :: 2 :: 3 :: 4 :: RNil // ::(1, ::(2, ::(3, RNil)))
-  println(aSmallList)
-  println(aSmallList(2)) // 3
-  println(aSmallList.length) // 3
-  println(aSmallList.reverse) // [3, 2, 1]
-  println(RList.from(1 to 5)) // [1, 2, 3, 4, 5]
-  println(aSmallList ++ (5 :: 6 :: RNil))
-  println(aSmallList.removeAt(1))
-  println(aSmallList.map(_ * 2))
-  println(aSmallList.flatMap(x => x :: (2 * x) :: RNil))
-  println(aSmallList.filter(_ %2 == 1))
 
+  def testEasyProblems(): Unit = {
+    println(aSmallList)
+    println(aSmallList(2)) // 3
+    println(aSmallList.length) // 3
+    println(aSmallList.reverse) // [3, 2, 1]
+    println(RList.from(1 to 5)) // [1, 2, 3, 4, 5]
+    println(aSmallList ++ (5 :: 6 :: RNil)) // [1, 3, 4]
+    println(aSmallList.removeAt(1))
+    println(aSmallList.map(_ * 2)) // [2, 4, 6, 8]
+    println(aSmallList.flatMap(x => x :: (2 * x) :: RNil)) // [1, 2, 2, 4, 3, 6, 4, 8]
+    println(aSmallList.filter(_ %2 == 1)) // [1, 3]
+  }
+
+  def testMediumProblems(): Unit = {
+    // rle
+    println((1 :: 1 :: 1 :: 2 :: 2 :: 2 :: 5 :: RNil).rle) // [(1,3), (2,3), (5,1)]
+
+    // Duplicate Each
+    println(aSmallList.duplicateEach(2)) // [1, 1, 2, 2, 3, 3, 4, 4]
+  }
 }
