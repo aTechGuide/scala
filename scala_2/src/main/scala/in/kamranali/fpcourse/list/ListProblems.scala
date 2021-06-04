@@ -1,6 +1,7 @@
 package in.kamranali.fpcourse.list
 
 import scala.annotation.tailrec
+import scala.util.Random
 // Where ever recursive call occurs its the last expression of its code branch
 
 sealed abstract class RList[+T] {
@@ -40,6 +41,12 @@ sealed abstract class RList[+T] {
   // Given a list duplicate each element a number of times in a row
   def duplicateEach(k: Int): RList[T]
 
+  // rotation by a number of positions to the left
+  def rotate(k: Int): RList[T]
+
+  // return k random sample in a new List, K can be larger than the list length
+  def sample(k: Int): RList[T]
+
 }
 
 case object RNil extends RList[Nothing] {
@@ -58,6 +65,8 @@ case object RNil extends RList[Nothing] {
   override def filter(f: Nothing => Boolean): RList[Nothing] = this
   override def rle: RList[(Nothing, Int)] = this
   override def duplicateEach(k: Int): RList[Nothing] = this
+  override def rotate(k: Int): RList[Nothing] = this
+  override def sample(k: Int): RList[Nothing] = this
 }
 
 case class ::[+T](override val head: T, override val tail: RList[T]) extends RList[T] {
@@ -156,7 +165,45 @@ case class ::[+T](override val head: T, override val tail: RList[T]) extends RLi
       else flatMapTailrec(remaining.tail, f(remaining.head).reverse ++ accumulator)
     }
 
-    flatMapTailrec(this, RNil)
+    /*
+      [1,2,3].flatMap(x => [x, 2 * x]) = betterFlatMap([1,2,3], [])
+      = betterFlatMap([2,3], [[2,1]])
+      = betterFlatMap([3], [[4,2], [2,1]])
+      = betterFlatMap([], [[6,3], [4,2], [2,1]])
+      = concatenateAll([[6,3], [4,2], [2,1]], [], [])
+      = concatenateAll([[4,2], [2,1]], [6,3], [])
+      = concatenateAll([[4,2], [2,1]], [3], [6])
+      = concatenateAll([[4,2], [2,1]], [], [3,6])
+      = concatenateAll([[2,1]], [4,2], [3,6])
+      = concatenateAll([[2,1]], [2], [4,3,6])
+      = concatenateAll([[2,1]], [], [2,4,3,6])
+      = concatenateAll([], [2,1], [2,4,3,6])
+      = concatenateAll([], [1], [2,2,4,3,6])
+      = concatenateAll([], [], [1,2,2,4,3,6])
+      = [1,2,2,4,3,6]
+      Complexity: O(N + Z)
+
+     */
+    @tailrec
+    // Complexity -> O(N + Z) ~> O(Z)
+    def betterFlatmap(remaining: RList[T], accum: RList[RList[S]]): RList[S] = {
+      if (remaining.isEmpty) concatenateAll(accum, RNil, RNil)
+      else betterFlatmap(remaining.tail, f(remaining.head).reverse :: accum)
+    }
+
+    @tailrec
+    // Complexity -> O(Z)
+//    Where
+//    z = dimension of the result
+//    = Concatenation of the application of f() on every single element of the original list
+    def concatenateAll(elements: RList[RList[S]], currList: RList[S], accum: RList[S]): RList[S] = {
+      if (currList.isEmpty && elements.isEmpty) accum
+      else if (currList.isEmpty) concatenateAll(elements.tail, elements.head, accum)
+      else concatenateAll(elements, currList.tail, currList.head :: accum)
+    }
+
+    // flatMapTailrec(this, RNil)
+    betterFlatmap(this, RNil)
   }
 
   // Complexity -> O(N)
@@ -202,6 +249,48 @@ case class ::[+T](override val head: T, override val tail: RList[T]) extends RLi
     deTailrec(this.tail, this.head, 0, RNil)
   }
 
+  // Complexity -> O(Max(N * K))
+  override def rotate(k: Int): RList[T] = {
+    @tailrec
+    def rotateTailrec(remaining: RList[T], rotationLeft: Int, buffer: RList[T]): RList[T] = {
+      if (remaining.isEmpty && rotationLeft == 0) this
+      else if (remaining.isEmpty) rotateTailrec(this, rotationLeft, RNil)
+      else if (rotationLeft == 0) remaining ++ buffer.reverse
+      else rotateTailrec(remaining.tail, rotationLeft - 1, remaining.head :: buffer)
+
+    }
+    rotateTailrec(this, k, RNil)
+  }
+
+  // Complexity -> O(N * K)
+  override def sample(k: Int): RList[T] = {
+    val random = new Random(System.currentTimeMillis())
+    val maxIdx = this.length
+
+    @tailrec
+    // Complexity -> O(N * K)
+    def sampleTailrec(nRemaining: Int, acc: RList[T]): RList[T] = {
+      if (nRemaining == 0) acc
+      else {
+        val index = random.nextInt(maxIdx)
+        val newNumber = this(index)
+        sampleTailrec(nRemaining - 1, newNumber :: acc)
+      }
+    }
+
+    // Complexity -> O(N * K)
+    def sampleElegant: RList[T] = {
+      RList.from(
+        (1 to k)
+          .map(_ => random.nextInt(maxIdx))
+          .map(idx => this (idx))
+      )
+    }
+
+      if (k < 0) RNil
+      else sampleElegant
+    }
+
 }
 
 object RList {
@@ -218,6 +307,7 @@ object RList {
 object ListProblems extends App {
 
   val aSmallList = 1 :: 2 :: 3 :: 4 :: RNil // ::(1, ::(2, ::(3, RNil)))
+  val oneToTen = RList.from(1 to 10)
 
   def testEasyProblems(): Unit = {
     println(aSmallList)
@@ -238,5 +328,17 @@ object ListProblems extends App {
 
     // Duplicate Each
     println(aSmallList.duplicateEach(2)) // [1, 1, 2, 2, 3, 3, 4, 4]
+
+    // rotate list
+    println(aSmallList.rotate(2)) // [3, 4, 1, 2]
+
+    // sample
+    println(aSmallList.sample(2)) // [3, 2]
   }
+
+  // sample
+  println(aSmallList.sample(2)) // [3, 2]
+
+
+
 }
