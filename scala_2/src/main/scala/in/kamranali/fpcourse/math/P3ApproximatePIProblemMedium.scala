@@ -3,7 +3,7 @@ package in.kamranali.fpcourse.math
 import scala.util.Random
 
 // Compute the number Pi with increasing precision
-object P3ApproximatePIProblem extends App {
+object P3ApproximatePIProblemMedium extends App {
 
   val random = new Random(System.currentTimeMillis)
 
