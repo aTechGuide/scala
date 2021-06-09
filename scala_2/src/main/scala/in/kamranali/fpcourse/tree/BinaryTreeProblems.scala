@@ -1,6 +1,7 @@
 package in.kamranali.fpcourse.tree
 
 import scala.annotation.tailrec
+import scala.collection.immutable.Queue
 
 sealed abstract class BTree[+T] {
   def value: T
@@ -59,6 +60,9 @@ sealed abstract class BTree[+T] {
     Tree is symmetrical w.r.t 1 (root Node)
    */
   def isSymmetrical: Boolean
+
+  // collect all nodes to a list
+  def toList: List[T]
 }
 
 case object BEnd extends BTree[Nothing] {
@@ -75,6 +79,7 @@ case object BEnd extends BTree[Nothing] {
   override def mirror: BTree[Nothing] = BEnd
   override def sameShapeAs[S >: Nothing](that: BTree[S]): Boolean = that.isEmpty
   override def isSymmetrical: Boolean = true
+  override def toList: List[Nothing] = List()
 }
 
 case class BNode[+T](override val value: T, override val left: BTree[T], override val right: BTree[T]) extends BTree[T] {
@@ -225,6 +230,128 @@ case class BNode[+T](override val value: T, override val left: BTree[T], overrid
 
   override def isSymmetrical: Boolean = sameShapeAs(this.mirror)
 
+  override def toList: List[T] = {
+    /*
+            _____1_____
+           /           \
+         __2__       __6__
+        /     \     /     \
+        3     4     7     8
+               \
+                5
+    Options:
+    - pre-order: [1 2 3 4 5 6 7 8]
+    - in-order: [3 2 4 5 1 7 6 8]
+    - post-order: [3 5 4 2 7 6 8 1]
+    - per-level: [1 2 6 3 4 7 8 5]
+   */
+
+    def preorderStack(node: BTree[T]): List[T] = {
+      if (node.isEmpty) List()
+      else {
+        val left = preorderStack(node.left)
+        val right = preorderStack(node.right)
+        node.value :: left ++ right
+      }
+    }
+
+    def preorderStackDaniel(node: BTree[T]): List[T] = {
+      if (node.isEmpty) List()
+      else node.value :: preorderStackDaniel(node.left) ++ preorderStackDaniel(node.right)
+    }
+
+    @tailrec
+    def preorderTailrec(stack: List[BTree[T]], visited: Set[BTree[T]]= Set(), acc: Queue[T] = Queue()): List[T] = {
+
+      /*
+      pot([1], [], []) =
+      pot([1 2 6], [1], []) =
+      pot([2 6], [1], [1]) =
+      pot([2 3 4 6], [1 2], [1]) =
+      pot([3 4 6], [1 2], [1 2]) =
+      pot([4 6], [1 2], [1 2 3] =
+      pot([4 5 6], [1 2 4], [1 2 3]) =
+      pot([5 6], [1 2 4], [1 2 3 4]) =
+      pot([6], [1 2 4], [1 2 3 4 5]) =
+      pot([6 7 8], [1 2 4 6], [1 2 3 4 5]) =
+      pot([7 8], [1 2 4 6], [1 2 3 4 5 6]) =
+      pot([8], [1 2 4 6], [1 2 3 4 5 6 7]) =
+      pot([], [1 2 4 6], [1 2 3 4 5 6 7 8]) =
+      [1 2 3 4 5 6 7 8]
+     */
+
+      if (stack.isEmpty) acc.toList
+      else if (stack.head.isEmpty) preorderTailrec(stack.tail, visited, acc)
+      else if (stack.head.isLeaf) preorderTailrec(stack.tail, visited, acc.enqueue(stack.head.value))
+      else if (visited.contains(stack.head)) preorderTailrec(stack.tail, visited, acc.enqueue(stack.head.value))
+      else {
+        val node = stack.head
+        val newStack = node :: node.left :: node.right :: stack.tail
+
+        preorderTailrec(newStack, visited + node, acc)
+      }
+    }
+
+    @tailrec
+    def inorderTailrec(stack: List[BTree[T]], visited: Set[BTree[T]]= Set(), acc: Queue[T] = Queue()): List[T] = {
+
+      if (stack.isEmpty) acc.toList
+      else if (stack.head.isEmpty) inorderTailrec(stack.tail, visited, acc)
+      else if (stack.head.isLeaf) inorderTailrec(stack.tail, visited, acc.enqueue(stack.head.value))
+      else if (visited.contains(stack.head)) inorderTailrec(stack.tail, visited, acc.enqueue(stack.head.value))
+      else {
+        val node = stack.head
+        val newStack = node.left :: node :: node.right :: stack.tail
+
+        inorderTailrec(newStack, visited + node, acc)
+      }
+    }
+
+    @tailrec
+    def postorderTailrec(stack: List[BTree[T]], visited: Set[BTree[T]]= Set(), acc: Queue[T] = Queue()): List[T] = {
+
+      if (stack.isEmpty) acc.toList
+      else if (stack.head.isEmpty) postorderTailrec(stack.tail, visited, acc)
+      else if (stack.head.isLeaf) postorderTailrec(stack.tail, visited, acc.enqueue(stack.head.value))
+      else if (visited.contains(stack.head)) postorderTailrec(stack.tail, visited, acc.enqueue(stack.head.value))
+      else {
+        val node = stack.head
+        val newStack = node.left :: node.right :: node :: stack.tail
+
+        postorderTailrec(newStack, visited + node, acc)
+      }
+    }
+
+    @tailrec
+    def perlevelTailrec(level: List[BTree[T]], acc: Queue[T] = Queue()): List[T] = {
+
+      /*
+        plt([1], []) =
+        plt([2, 6], [1]) =
+        plt([3,4,7,8], [1 2 6]) =
+        plt([5], [1 2 6 3 4 7 8]) =
+        plt([], [1 2 6 3 4 7 8 5]) =
+        [1 2 6 3 4 7 8 5]
+     */
+
+      if (level.isEmpty) acc.toList
+      else if (level.head.isEmpty) perlevelTailrec(level.tail, acc)
+      else if (level.head.isLeaf) perlevelTailrec(level.tail, acc.enqueue(level.head.value))
+      else {
+        val expanded = level.flatMap( elem => List(elem.left, elem.right))
+        val elems = level.map(_.value)
+
+        perlevelTailrec(expanded, acc.enqueueAll(elems))
+      }
+
+    }
+
+    // preorderTailrec(List(this))
+    // inorderTailrec(List(this))
+    // postorderTailrec(List(this))
+    perlevelTailrec(List(this))
+
+  }
 
 }
 object BinaryTreeProblems extends App {
@@ -273,16 +400,21 @@ object BinaryTreeProblems extends App {
     BNode(number, tree, BEnd)
   })
 
-  println(tree.collectLeaves.map(_.value))
-  println(tree.leafCount)
-  println(tree.size)
-  println(degenerate.size)
-  println(tree.collectNodes(2).map(_.value))
-  println(tree.mirror)
-  assert(tree.sameShapeAs(tree10x))
-  assert(!tree.sameShapeAs(tree10xExtra))
+  def testMethods(): Unit = {
+    println(tree.collectLeaves.map(_.value))
+    println(tree.leafCount)
+    println(tree.size)
+    println(degenerate.size)
+    println(tree.collectNodes(2).map(_.value))
+    println(tree.mirror)
+    assert(tree.sameShapeAs(tree10x))
+    assert(!tree.sameShapeAs(tree10xExtra))
 
-  assert(tree10xExtra.isSymmetrical)
+    assert(tree10xExtra.isSymmetrical)
+  }
+
+  println(tree.toList)
+
 
 
 }
