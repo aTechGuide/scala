@@ -260,6 +260,11 @@ case class BNode[+T](override val value: T, override val left: BTree[T], overrid
       else node.value :: preorderStackDaniel(node.left) ++ preorderStackDaniel(node.right)
     }
 
+    def inorderStackDaniel(node: BTree[T]): List[T] = {
+      if (node.isEmpty) List()
+      else preorderStackDaniel(node.left) ++ List(node.value) ++ preorderStackDaniel(node.right)
+    }
+
     @tailrec
     def preorderTailrec(stack: List[BTree[T]], visited: Set[BTree[T]]= Set(), acc: Queue[T] = Queue()): List[T] = {
 
