@@ -2,7 +2,7 @@ package in.kamranali.fpcourse.graphs
 
 import scala.annotation.tailrec
 
-object GraphProblems extends App {
+object GraphProblems {
 
   // Every Node will be a Key in the Map
   // For each Node, We keep a Set of other Nodes that this Node is associated to
@@ -107,16 +107,58 @@ object GraphProblems extends App {
   def findCycle[T](graph: Graph[T], node: T): List[T] =
     findPath(graph, node, node)
 
-  assert(outDegree(socialNetwork, "Alice") == 3)
-  assert(inDegree(socialNetwork, "David") == 2)
+  def makeUndirected[T](graph: Graph[T]): Graph[T] = {
+    // A -> B and B -> A
+    def addEdge(graph: Graph[T], from: T, to: T): Graph[T] = {
+      if (!graph.contains(from)) graph + (from -> Set(to))
+      else {
+        val neighbours = graph(from)
+        graph + (from -> (neighbours + to))
+      }
+    }
 
-  assert(isPath(socialNetwork, "Alice", "Mary"))
-  assert(!isPath(socialNetwork, "Bob", "Mary"))
+    @tailrec
+    def addOpposingEdges(remainingNodes: Set[T], acc: Graph[T]): Graph[T] = {
+      if (remainingNodes.isEmpty) acc
+      else {
+        val node = remainingNodes.head
+        val neighbours = graph(node)
+        val newGraph = neighbours.foldLeft(acc)((accum, neighbour) => addEdge(accum, neighbour, node))
+        addOpposingEdges(remainingNodes.tail, newGraph)
+      }
+    }
 
-  assert(findPath(socialNetwork, "Charlie", "Mary") == List("Charlie", "David", "Mary"))
-  assert(findPath(socialNetwork, "Bob", "Mary") == List())
+    addOpposingEdges(graph.keySet, graph)
 
-  assert(findCycle(socialNetwork, "Alice") == List())
+  }
+
+  def main(args: Array[String]): Unit = {
+
+    def easyProblems(): Unit = {
+      assert(outDegree(socialNetwork, "Alice") == 3)
+      assert(inDegree(socialNetwork, "David") == 2)
+    }
+
+    def mediumProblems(): Unit = {
+      assert(isPath(socialNetwork, "Alice", "Mary"))
+      assert(!isPath(socialNetwork, "Bob", "Mary"))
+
+      assert(findPath(socialNetwork, "Charlie", "Mary") == List("Charlie", "David", "Mary"))
+      assert(findPath(socialNetwork, "Bob", "Mary") == List())
+
+      assert(findCycle(socialNetwork, "Alice") == List())
+
+      val undirectedNetwork = makeUndirected(socialNetwork)
+
+      println(undirectedNetwork("Bob")) // Set(Alice, Mary, David)
+      println(undirectedNetwork("Alice")) // Set(Bob, Charlie, David)
+      println(undirectedNetwork("David")) // Set(Bob, Mary, Alice, Charlie)
+    }
+
+
+
+  }
+
 
 
 }
