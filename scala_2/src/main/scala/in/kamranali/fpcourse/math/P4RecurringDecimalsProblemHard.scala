@@ -17,10 +17,10 @@ import scala.annotation.tailrec
 object P4RecurringDecimalsProblemHard {
 
   @tailrec
-  def findRecurrenceStart(digit: Long, digits: List[Long], rem: Long, remainders: List[Long], currentIdx: Int): Int = {
-    if (digits.isEmpty || remainders.isEmpty) -1
-    else if (digit == digits.head && rem == remainders.head) currentIdx
-    else findRecurrenceStart(digit, digits.tail, rem, remainders.tail, currentIdx + 1)
+  def findRecurrenceStart(quotient: Long, quotients: List[Long], rem: Long, remainders: List[Long], currentIdx: Int): Int = {
+    if (quotients.isEmpty || remainders.isEmpty) -1
+    else if (quotient == quotients.head && rem == remainders.head) currentIdx
+    else findRecurrenceStart(quotient, quotients.tail, rem, remainders.tail, currentIdx + 1)
 
   }
 
