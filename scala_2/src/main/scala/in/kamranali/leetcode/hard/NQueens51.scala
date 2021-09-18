@@ -15,14 +15,14 @@ object NQueens51 {
     def isValid(latestQueenRow: Int, placement: Vector[Int]): Boolean = {
 
       val latestQueenColumn = placement(latestQueenRow)
-      (0 until latestQueenRow).foreach { idx =>
+      (0 until latestQueenRow).foreach { currentRow =>
 
         // Check Column Difference between the idx Queen and the latest Queen i.e.
-        val colDiff = math.abs(placement(idx) - latestQueenColumn)
+        val colDiff = math.abs(placement(currentRow) - latestQueenColumn)
 
         // diff == 0 => Same Column
         // diff == rows - idx => Diagonal [column difference == rows difference]
-        if (colDiff == 0 || colDiff == latestQueenRow - idx) return false
+        if (colDiff == 0 || colDiff == latestQueenRow - currentRow) return false
       }
       true
     }

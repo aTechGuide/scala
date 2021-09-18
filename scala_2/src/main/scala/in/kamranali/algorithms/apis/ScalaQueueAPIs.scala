@@ -16,14 +16,12 @@ object ScalaQueueAPIs extends App {
   // front Element
   println(s"Front = ${bag.front}")
 
-
   // Dequeue
 
   var data = bag.head
   bag = bag.tail
 
   println(s"bag = $bag and data = $data")
-
 
   val (data1, bag1) = bag.dequeue
 
