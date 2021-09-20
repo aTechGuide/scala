@@ -1,35 +1,41 @@
 package in.kamranali.leetcode.medium
 
-import scala.collection.immutable.{List, Queue}
+
 
 object Permutations46 {
     // https://leetcode.com/problems/combination-sum/discuss/16502/A-general-approach-to-backtracking-questions-in-Java-(Subsets-Permutations-Combination-Sum-Palindrome-Partitioning)
     def permute(nums: Array[Int]): List[List[Int]] = {
+        import scala.collection.mutable.ArrayBuffer
+        import scala.collection.immutable.{List, Queue}
 
         val len = nums.length
         val temp = Array.fill[Boolean](len)(false)
-        var res: List[List[Int]] = List()
 
-        def util(selected: Array[Boolean], tempSol: Queue[Int]): Unit = {
+        def util(selected: Array[Boolean], tempSol: Queue[Int], res: ArrayBuffer[List[Int]]): Unit = {
 
             if (tempSol.length == len) {
-                res = res :+ tempSol.toList
+                res.addOne(tempSol.toList)
             } else {
                 for (choice <- 0 until len) {
-                    val elem = nums(choice)
-
                     if (!selected(choice)) {
+
+                        // Choose
                         selected(choice) = true
 
-                        util(selected, tempSol :+ elem)
+                        // Recurse
+                        val elem = nums(choice)
+                        util(selected, tempSol :+ elem, res)
+
+                        // Backtrack (remove selection)
                         selected(choice) = false
                     }
                 }
             }
         }
 
-        util(temp, Queue())
-        res
+        val res = ArrayBuffer[List[Int]]()
+        util(temp, Queue(), res)
+        res.toList
     }
 
     def main(args: Array[String]): Unit = {

@@ -27,10 +27,8 @@ object CombinationSumII40 {
       if (sum == target) {
         println(s"Answer found for Position = $position, so skipping choices")
         res = res :+ tempSol.toList
-        ()
       } else if (sum > target) {
         println(s"Dead end found for Position = $position, so skipping choices")
-        ()
       } else {
         for (choice <- position until len) {
           val elem = sorted(choice)
@@ -41,6 +39,9 @@ object CombinationSumII40 {
             println(s"SKIPPING for Position = $position, choice = $choice, elem = $elem, newSum = $newTempSum, newSol = $newSol")
           } else {
             println(s"evaluating Position = $position, choice = $choice, elem = $elem, newSum = $newTempSum, newSol = $newSol")
+
+            // Each number in candidates may only be used once in the combination.
+            // Hence choice + 1
             util(choice + 1, newTempSum, newSol)
           }
         }
