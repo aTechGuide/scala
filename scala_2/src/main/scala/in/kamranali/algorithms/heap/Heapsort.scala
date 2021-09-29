@@ -7,42 +7,42 @@ class Heapsort {
 
   def sort(A: Array[Int]): Unit = {
 
-    val n = A.length
+    val len = A.length
 
-    // Building the Heap
-    (n/2 - 1 to 0 by -1).foreach { i =>
-      heapify(A, n, i)
+    // Building the Max Heap
+    (len/2 - 1 to 0 by -1).foreach { parent =>
+      heapify(A, len, parent)
     }
 
     // Extracting elements from the heap
-    (n-1 to 0 by -1).foreach { i =>
+    (len-1 to 0 by -1).foreach { len =>
       val temp = A(0)
-      A(0) = A(i)
-      A(i) = temp
+      A(0) = A(len)
+      A(len) = temp
 
       // Call heapify on reduces heap
-      heapify(A, i, 0)
+      heapify(A, len, 0)
     }
   }
 
-  def heapify(A: Array[Int], n: Int, parent: Int): Unit = {
+  def heapify(A: Array[Int], len: Int, parent: Int): Unit = {
 
     var largest = parent
 
-    val leftChild = 2*parent + 1
-    val rightChild = 2*parent + 2
+    val leftChildIdx = 2 * parent + 1
+    val rightChildIdx = 2 * parent + 2
 
-    largest = if (leftChild < n && A(leftChild) > A(largest)) leftChild else largest
-    largest = if (rightChild < n && A(rightChild) > A(largest)) rightChild else largest
+    largest = if (leftChildIdx < len && A(leftChildIdx) > A(largest)) leftChildIdx else largest
+    largest = if (rightChildIdx < len && A(rightChildIdx) > A(largest)) rightChildIdx else largest
 
     // if largest is NOT root
     if (largest != parent) {
-       val temp = A(parent)
+      val temp = A(parent)
       A(parent) = A(largest)
       A(largest)= temp
 
       // Recursively correct the affected sub Tree
-      heapify(A, n, largest)
+      heapify(A, len, largest)
     }
   }
 }
