@@ -69,6 +69,6 @@ object MinimumWindowSubstring76 {
   }
 
   def main(args: Array[String]): Unit = {
-    println(minWindow("caweewcaefgc", "cae"))
+    println(minWindow("ADOBECBANC", "ABC"))
   }
 }

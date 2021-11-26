@@ -2,34 +2,38 @@ package in.kamranali.leetcode.medium
 
 object RotateImage48 {
   def rotate(matrix: Array[Array[Int]]): Unit = {
+    val dim = matrix.length
 
-    val rows = matrix.length
-    val cols = matrix(0).length
+    def adjust(layer: Int, itr: Int): Unit = {
 
-    def r(row: Int, col: Int, itr: Int): Unit = {
-
-      if (row == (rows / 2)) ()
-      else if ( itr == cols - 1 - col - row) r(row + 1, col + 1, 0)
+      if (layer == dim / 2) ()
+      else if (itr == dim - layer - 1) adjust(layer + 1, layer + 1)
       else {
+        val e1 = matrix(layer)(itr)
+        val e2 = matrix(itr)((dim-1) - layer)
+        val e3 = matrix((dim-1) - layer)((dim-1) - itr)
+        val e4 = matrix((dim-1) - itr)((dim-1) - (dim-1) - layer)
 
-        val e1 = matrix(row)(col + itr)
-        val e2 = matrix(row + itr)(cols - 1 - col)
-        val e3 = matrix(rows - 1 - row)(cols - 1 - col - itr)
-        val e4 = matrix(rows - 1 - row - itr)(col)
+        matrix(layer)(itr) = e4
+        matrix((dim-1) - itr)((dim-1) - (dim-1) - layer) = e3
+        matrix((dim-1) - layer)((dim-1) - itr) = e2
+        matrix(itr)((dim-1) - layer) = e1
 
-        matrix(row)(col + itr) = e4
-        matrix(rows - 1 - row - itr)(col) = e3
-        matrix(rows - 1 - row)(cols - 1 - col - itr) = e2
-        matrix(row + itr)(cols - 1 - col) = e1
-
-        r(row, col, itr + 1)
+        adjust(layer, itr + 1)
       }
     }
 
-    r(0, 0, 0)
+    adjust(0, 0)
   }
 
   def main(args: Array[String]): Unit = {
+
+    val data = Array(
+      Array(1,2,3),
+      Array(4,5,6),
+      Array(7,8,9)
+    )
+
     val odd = Array(
       Array(1,2,3,4,5),
       Array(6,7,8,9,10),
@@ -45,10 +49,10 @@ object RotateImage48 {
       Array(15,14,12,16)
     )
 
-    rotate(odd)
+    rotate(data)
 //    rotate(even)
 
-    odd.foreach( row => println(row.mkString(" ")))
+    data.foreach( row => println(row.mkString(" ")))
     //even.foreach( row => println(row.mkString(" ")))
   }
 }

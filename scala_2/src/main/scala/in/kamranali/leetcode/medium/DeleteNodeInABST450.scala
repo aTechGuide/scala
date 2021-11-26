@@ -54,3 +54,8 @@ object DeleteNodeInABST450 {
     println(deleteNode(root, 5))
   }
 }
+
+object test extends App {
+  val arr = Array(1, 2, 3).zipWithIndex.toMap
+  println(arr)
+}
