@@ -10,6 +10,28 @@ import scala.collection.mutable
     - https://github.com/mission-peace/interview/blob/master/src/com/interview/dynamic/BreakMultipleWordsWithNoSpaceIntoSpace.java
  */
 object WordBreak139 {
+
+    // Optimized Version
+    def wordBreak3(s: String, wordDict: List[String]): Boolean = {
+
+        val wordSet = wordDict.toSet
+        val len = s.length
+        val memory = Array.fill[Boolean](len + 1)(false)
+
+        memory(0) = true // Marking empty string as True
+
+        for {
+            right <- 1 to len
+            left <- 0 until right
+        } {
+            if (memory(left) && wordSet.contains(s.substring(left, right)))
+                memory(right) = true
+        }
+
+        println(memory.mkString(" "))
+        memory(len)
+    }
+
     def wordBreak1(s: String, wordDict: List[String]): Boolean = {
         
         val len = s.length
@@ -61,26 +83,6 @@ object WordBreak139 {
         val ans = wb(0, 0)
         println(memory)
         ans
-    }
-
-    def wordBreak3(s: String, wordDict: List[String]): Boolean = {
-
-        val wordSet = wordDict.toSet
-        val len = s.length
-        val memory = Array.fill[Boolean](len + 1)(false)
-
-        memory(0) = true // Marking empty string as True
-
-        for {
-            right <- 1 to len
-            left <- 0 until right
-        } {
-            if (memory(left) && wordSet.contains(s.substring(left, right)))
-                memory(right) = true
-        }
-
-        println(memory.mkString(" "))
-        memory(len)
     }
 
     def main(args: Array[String]): Unit = {
