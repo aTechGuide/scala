@@ -8,9 +8,9 @@ TC -> O(m 𝛼(n)) [From Tushar's Video https://www.youtube.com/watch?v=ID00PMy0
   - Hence, O(m 𝛼(n)) =~ O(4m) = O(m)
 
 - https://www.geeksforgeeks.org/disjoint-set-data-structures/
-- https://www.youtube.com/watch?v=3gbO7FDYNFQ
+- https://www.youtube.com/watch?v=3gbO7FDYNFQ [Take U Forward]
 
-Example Leetcode Question -> https://leetcode.com/problems/number-of-provinces/submissions/
+Example Leetcode Question -> https://leetcode.com/problems/number-of-provinces/
 */
 
 /*
