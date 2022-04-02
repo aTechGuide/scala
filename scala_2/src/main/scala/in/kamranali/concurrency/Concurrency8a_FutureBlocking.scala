@@ -17,40 +17,44 @@ import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 
-object FutureBlocking extends App {
+object Concurrency8a_FutureBlocking extends App {
 
+  // Data Structures
   case class User(name: String)
-  case class Transaction(sender: String, receiver: String, amount: Double, status: String)
+  case class Transaction(sender: String, item: String, receiver: String, amount: Double, status: String)
 
+  // App
   object BankingApp {
     val name = "Banking"
 
-    def fetchUser(name: String): Future[User] = Future {
+    private def fetchUser(name: String): Future[User] = Future {
       //simulating fetching from DB
       Thread.sleep(500)
       User(name)
-
     }
 
-    def createTransaction(user: User, merchantName: String, amount: Double): Future[Transaction] = Future {
+    private def createTransaction(user: User, item: String, merchantName: String, amount: Double): Future[Transaction] = Future {
       // simulate processes
       Thread.sleep(1000)
-      Transaction(user.name, merchantName, amount, "Success")
+      Transaction(user.name, item, merchantName, amount, "Success")
     }
 
     def purchase(username: String, item: String, merchantName: String, cost: Double): String = {
-      // fetch the user from DB
-      // create a transaction
-      // WAIT for transaction to finish
 
+      /*
+        Steps
+         - fetch the user from DB
+         - create a transaction
+         - WAIT for transaction to finish
+      */
       val transactionStatusFuture: Future[String] = for {
         user <- fetchUser(username)
-        transation <- createTransaction(user, merchantName, cost)
-      } yield transation.status
+        transaction <- createTransaction(user, item, merchantName, cost)
+      } yield transaction.status
 
 
       // Blocking in a future [We block until future is completed]
-      Await.result(transactionStatusFuture, 2.seconds) // implicit conversions -> pimp my library
+      Await.result[String](transactionStatusFuture, 2.seconds) // implicit conversions -> pimp my library
       // if duration has passed it will throw an exception with a timeout
 
       // Await.ready(transactionStatusFuture, 2.seconds) //<- Same just returns future or throws exp if time has passed
@@ -58,5 +62,4 @@ object FutureBlocking extends App {
   }
 
   println(BankingApp.purchase("Daniel", "Iphone 12", "Store", 3000))
-
 }

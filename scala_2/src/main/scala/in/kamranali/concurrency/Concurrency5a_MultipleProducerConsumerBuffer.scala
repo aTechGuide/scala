@@ -8,14 +8,11 @@ package in.kamranali.concurrency
 import scala.collection.mutable
 import scala.util.Random
 
-object MultipleProducerConsumerBuffer extends App {
+object Concurrency5a_MultipleProducerConsumerBuffer extends App {
 
   class Consumer(id: Int, buffer: mutable.Queue[Int]) extends Thread {
-
     override def run(): Unit = {
       println("[Consumer Waiting] ... ")
-
-      val random = new Random()
 
       while (true) {
         buffer.synchronized {
@@ -44,7 +41,7 @@ object MultipleProducerConsumerBuffer extends App {
           buffer.notify() // Or buffer.notifyAll() <- Same behaviour
         }
 
-        Thread.sleep(random.nextInt(500))
+        Thread.sleep(new Random().nextInt(500))
       }
     }
   }
@@ -52,8 +49,6 @@ object MultipleProducerConsumerBuffer extends App {
   class Producer(id: Int, buffer: mutable.Queue[Int], capacity: Int) extends Thread {
     override def run(): Unit = {
       println(s"[producer $id] computing ...")
-
-      val random: Random = new Random()
       var i = 0
 
       while (true) {
@@ -69,24 +64,22 @@ object MultipleProducerConsumerBuffer extends App {
 
           // Notify anybody waiting on buffer
           buffer.notify() // Or buffer.notifyAll() <- Same behaviour
-
-
           i += 1
         }
-
-        Thread.sleep(random.nextInt(500))
+        Thread.sleep(new Random().nextInt(500))
       }
     }
   }
 
   def multiProdCons(nConsumers: Int, nProducers: Int): Unit = {
-    val buffer: mutable.Queue[Int] = new mutable.Queue[Int]()
+    val buffer = new mutable.Queue[Int]()
     val capacity = 3
 
     (1 to nConsumers).foreach(i => new Consumer(i, buffer).start())
     (1 to nProducers).foreach(i => new Producer(i, buffer, capacity).start())
   }
 
+  // Driver
   // multiProdCons(3,3)
 
   /**
@@ -113,12 +106,12 @@ object MultipleProducerConsumerBuffer extends App {
       println("[announcer] Rock'n roll")
       bell.synchronized {
         bell.notifyAll() // <- wakes all the thread waiting on bell
-        // bell.notify() // <- wakes only ONE thread
+        //bell.notify() // <- wakes only ONE thread
       }
     }).start()
 
   }
 
+  // Driver
   // testNotifyAll()
-
 }

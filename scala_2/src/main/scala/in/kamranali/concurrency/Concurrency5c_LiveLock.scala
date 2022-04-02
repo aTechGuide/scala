@@ -15,9 +15,10 @@ package in.kamranali.concurrency
     in such a way that nobody can continue.
     So the threads are active. They're not blocked but they can now
   */
-object LiveLock extends App {
+object Concurrency5c_LiveLock extends App {
 
   case class Friend(name: String) {
+
     var side = "right"
 
     def switchSide(): Unit = {
@@ -37,6 +38,7 @@ object LiveLock extends App {
     }
   }
 
+  // Driver
   val sam = Friend("Sam")
   val pierre = Friend("Pierre")
 

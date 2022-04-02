@@ -7,7 +7,7 @@ import java.util.concurrent.Executors
   *
   * Scala Doc -> https://docs.scala-lang.org/overviews/core/futures.html
   */
-object Basics extends App {
+object Concurrency1_Basics extends App {
 
   val aThread = new Thread(() => println("Running in Parallel"))
 

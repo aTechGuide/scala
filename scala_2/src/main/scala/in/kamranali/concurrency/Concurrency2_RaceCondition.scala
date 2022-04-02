@@ -3,8 +3,9 @@ package in.kamranali.concurrency
 /**
   * [Concurrency] Chapter 2: Concurrency Problems
   */
-object RaceCondition extends App {
+object Concurrency2_RaceCondition extends App {
 
+  /** Example 1 **/
   // Race Condition
   def runInParallel(): Unit = {
     var x = 0
@@ -19,6 +20,7 @@ object RaceCondition extends App {
 
   // for (_ <- 1 to 100) runInParallel
 
+  /** Example 2 **/
   class BankAccount(var amount: Int) {
     override def toString: String = "" + amount
   }

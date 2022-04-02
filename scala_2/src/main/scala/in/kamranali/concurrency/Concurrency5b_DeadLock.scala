@@ -6,14 +6,14 @@ package in.kamranali.concurrency
   * Exercise 2 - Deadlock
   */
 
-object DeadLock extends App {
-
+object Concurrency5b_DeadLock extends App {
 
   case class Friend(name: String) {
     def bow(other: Friend): Unit = {
-      this.synchronized {
+      this.synchronized { //<- `this` lock acquired
         println(s"$this:I am bowing to my friend $other")
-        other.rise(this)
+
+        other.rise(this) //<- try to acquire lock on `other`. As rise is called on other friend
         println(s"$this my friend $other has risen")
       }
     }

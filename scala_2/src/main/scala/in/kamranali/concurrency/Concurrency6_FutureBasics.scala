@@ -9,7 +9,7 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success}
 
-object FutureBasics extends App {
+object Concurrency6_FutureBasics extends App {
 
   /**
     - Futures are Functional way of computing something in parallel or on another thread
@@ -32,10 +32,15 @@ object FutureBasics extends App {
 
   println("waiting on the future")
 
-  // NON Blocking Processing
-  // Callback inside "onComplete" is called by some thread. It may be "this" thread that created the
-  // callback, it may be the thread who ran the future, it may be some other thread
-  // So we do NOT make any assumption on which thread will actually execute the partial function inside "onComplete"
+  /** [NON Blocking Processing] **/
+  /*
+   Callback inside "onComplete" is called by some thread. It may be
+   - "this" thread that created the callback,
+   - the thread who ran the future,
+   - some other thread
+
+   So we do NOT make any assumption on which thread will actually execute the partial function inside "onComplete"
+  */
   aFuture.onComplete(t => t match {
     case Success(meaningOfLife) => println(s"The meaning of life is $meaningOfLife")
     case Failure(exception) => println(s"I have failed with $exception")

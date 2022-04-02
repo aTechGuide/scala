@@ -7,7 +7,7 @@ package in.kamranali.concurrency
 /**
   *  Problem => Forcing the thread to run actions in a guaranteed certain order. Although the thread themselves are NOT ordered
   */
-object ProducerConsumer extends App {
+object Concurrency3_ProducerConsumer extends App {
 
   class SimpleContainer {
     private var value: Int = 0
@@ -95,6 +95,8 @@ object ProducerConsumer extends App {
 
       container.synchronized {
         container.wait() // <- release the lock and suspends until someone else will signal that they may continue
+        // ^^^^^^^^^^^^^ [17 March 2022] I think this is wrong, we should first check and then wait.
+        // Its possible that producer has produced some value.
       }
 
       // container must have some value

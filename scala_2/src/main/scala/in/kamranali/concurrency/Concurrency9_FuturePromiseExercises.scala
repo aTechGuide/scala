@@ -10,7 +10,7 @@ import scala.concurrent.{Future, Promise}
 import scala.util.{Random, Try}
 import scala.concurrent.ExecutionContext.Implicits.global
 
-object FuturePromiseExercises {
+object Concurrency9_FuturePromiseExercises {
 
   // Exercise 1: Fulfill a future IMMEDIATELY with a value
   def fulfillImmediately[T](value: T): Future[T] = Future(value)
@@ -26,8 +26,8 @@ object FuturePromiseExercises {
   def first[A](fa: Future[A], fb: Future[A]): Future[A] = {
     val promise = Promise[A]
 
-    fa.onComplete(promise.tryComplete)
-    fb.onComplete(promise.tryComplete)
+    fa.onComplete(ans => promise.tryComplete(ans))
+    fb.onComplete(ans => promise.tryComplete(ans))
 
     promise.future
   }
@@ -47,18 +47,18 @@ object FuturePromiseExercises {
         lastPromise.complete(result)
 
 
-    fa.onComplete(checkAndComplete)
-    fb.onComplete(checkAndComplete)
+    fa.onComplete(ans => checkAndComplete(ans))
+    fb.onComplete(ans => checkAndComplete(ans))
 
     lastPromise.future
   }
-
-  val fast = Future {
+  // Driver for Exercise 4 [Start]
+  val fast: Future[Int] = Future {
     Thread.sleep(100)
     41
   }
 
-  val slow = Future {
+  val slow: Future[Int] = Future {
     Thread.sleep(200)
     45
   }
@@ -67,6 +67,7 @@ object FuturePromiseExercises {
   last(fast, slow).foreach(println)
 
   Thread.sleep(1000)
+  // Driver for Exercise 4 [End]
 
   // Exercise 5: retryUntil
   // I want you to run an action repeatedly until a condition is met.
@@ -86,8 +87,8 @@ object FuturePromiseExercises {
     nextValue
   }
 
-  retryUntil(action, (x: Int) => x < 50).foreach(result => println("settled at " + result))
+  retryUntil(action, (x: Int) => x < 50)
+    .foreach(result => println("settled at " + result))
 
   Thread.sleep(10000)
-
 }

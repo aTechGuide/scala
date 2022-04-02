@@ -5,7 +5,6 @@ package in.kamranali.concurrency
   * [Concurrency] Chapter 8 B: Future And Promises
   *
   * Promises
-  *
   * Manual manipulation of futures with promises
   */
 
@@ -13,7 +12,7 @@ import scala.concurrent.Promise
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.Success
 
-object PromiseBasics extends App {
+object Concurrency8b_PromiseBasics extends App {
 
   /**
     Futures are Read Only when they are done. Sometimes we need to specifically set or complete a Future at the point of our choosing.
@@ -46,11 +45,9 @@ object PromiseBasics extends App {
   })
 
   /**
-    * Promise Pattern
-    * One thread knows how to handle the future and one thread inserts values or a failure
-    * into the future by calling `promise.success` Or `promise.failure`.
-    *
-    *
+    * [Promise Pattern]
+    * - One thread knows how to handle the future
+    * - Another thread inserts values or a failure into the future by calling `promise.success` Or `promise.failure`.
     */
 
   producer.start()

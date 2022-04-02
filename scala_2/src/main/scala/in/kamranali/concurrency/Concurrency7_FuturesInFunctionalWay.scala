@@ -5,7 +5,6 @@ package in.kamranali.concurrency
   * [Concurrency] Chapter 7: Future And Promises
   *
   * Dealing with Futures in Functional Way
-  *
   */
 
 import scala.concurrent.Future
@@ -13,7 +12,7 @@ import scala.util.{Failure, Random, Success}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-object FuturesInFunctionalWay extends App {
+object Concurrency7_FuturesInFunctionalWay extends App {
 
   // Mini Social Network
 
@@ -53,8 +52,7 @@ object FuturesInFunctionalWay extends App {
       val bfID = friends(profile.id)
       Profile(bfID, names(bfID))
     }
-
-  }
+  } // SocialNetwork Ended
 
   // client Application: We want Mark to poke Bill
   val mark = SocialNetwork.fetchProfile("fb.id.1-zuck") // We have client application knows the ID
@@ -100,12 +98,12 @@ object FuturesInFunctionalWay extends App {
   }
 
   // Option 2
-  val aFetchedProfileNoMatterWhat = SocialNetwork.fetchProfile("unknown id").recoverWith {
+  val aFetchedProfileNoMatterWhat: Future[Profile] = SocialNetwork.fetchProfile("unknown id").recoverWith {
     case e: Throwable => SocialNetwork.fetchProfile("fb.id.0-dummy")
   }
 
   // Option 3
-  val fallbackResult = SocialNetwork.fetchProfile("unknown id").fallbackTo {
+  val fallbackResult: Future[Profile] = SocialNetwork.fetchProfile("unknown id").fallbackTo {
     SocialNetwork.fetchProfile("fb.id.0-dummy")
   } // In case both future fails, then exception from first future will be contained in the failure
 

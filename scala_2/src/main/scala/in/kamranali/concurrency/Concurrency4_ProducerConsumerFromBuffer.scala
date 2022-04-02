@@ -12,17 +12,17 @@ package in.kamranali.concurrency
 import scala.collection.mutable
 import scala.util.Random
 
-object ProducerConsumerFromBuffer extends App {
+object Concurrency4_ProducerConsumerFromBuffer extends App {
 
   def prodConsLargeBuffer(): Unit = {
 
+    // Shared Object
     val buffer: mutable.Queue[Int] = new mutable.Queue[Int]()
     val capacity = 3
 
+    // Consumer
     val consumer = new Thread(() => {
       println("[Consumer] Waiting ... ")
-
-      val random = new Random()
 
       while (true) {
         buffer.synchronized {
@@ -40,15 +40,15 @@ object ProducerConsumerFromBuffer extends App {
           buffer.notify()
         }
 
-        Thread.sleep(random.nextInt(500))
+        Thread.sleep(new Random().nextInt(500))
       }
     })
 
+    // Producer
     val producer = new Thread(() => {
       println("[Producer] Computing ...")
 
-      val random = new Random()
-      var i = 0
+      var i = 0 // data to be produced
 
       while (true) {
         buffer.synchronized {
@@ -67,15 +67,14 @@ object ProducerConsumerFromBuffer extends App {
           i += 1
         } // synchronized ends
 
-        Thread.sleep(random.nextInt(500))
+        Thread.sleep(new Random().nextInt(500))
       }
     })
 
+    // Driver
     consumer.start()
     producer.start()
-
   }
 
   prodConsLargeBuffer()
-
 }
