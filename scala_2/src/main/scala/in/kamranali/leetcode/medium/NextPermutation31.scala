@@ -41,7 +41,7 @@ object NextPermutation31 {
             // Edge case (5, 4, 3, 2)
             sort(0, len - 1)
         } else {
-            // search an element > (peakIdx - 1)
+            // search an idx, such that num(idx) > num(peakIdx - 1)
             val swapIDx = findSwap(peakIdx, len - 1)
 
             // and swap it
