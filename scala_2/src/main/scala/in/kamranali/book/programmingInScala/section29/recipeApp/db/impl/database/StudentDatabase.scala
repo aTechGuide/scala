@@ -1,7 +1,6 @@
-package in.kamranali.book.programmingInScala.section29.recipeApp.db.impl
+package in.kamranali.book.programmingInScala.section29.recipeApp.db.impl.database
 
 import in.kamranali.book.programmingInScala.section29.recipeApp.db.Database
-import in.kamranali.book.programmingInScala.section29.recipeApp.entity.Food
 import in.kamranali.book.programmingInScala.section29.recipeApp.entity.recipes.{FrozenFood, FruitSalad}
 
 object StudentDatabase extends Database {
