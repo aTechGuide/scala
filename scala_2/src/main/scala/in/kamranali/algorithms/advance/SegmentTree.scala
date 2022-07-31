@@ -19,14 +19,19 @@ class SegmentTree(input: Array[Int]) {
     - We are building the child nodes first and then we build the parent
   */
   private def build(idxS: Int, low: Int, high: Int): Unit = {
-    if (high == low) segment(idxS) = input(low) // leaves are created from actual array
+    if (high == low) segment(idxS) = input(low)
     else {
+      // Step 1: First compute left child and right child
       val mid = calcMid(low, high)
 
-      build(leftChild(idxS), low, mid) // fill left child
-      build(rightChild(idxS), mid + 1, high) // fill right child
+      val lc = leftChild(idxS)
+      val rc = rightChild(idxS)
 
-      segment(idxS) = math.min(segment(leftChild(idxS)), segment(rightChild(idxS))) // fill parent, as left and right child are done
+      build(lc, low, mid)
+      build(rc, mid + 1, high)
+
+      // Step 2: Compute the current index
+      segment(idxS) = segment(lc) + segment(rc)
     }
   }
 
@@ -37,7 +42,7 @@ class SegmentTree(input: Array[Int]) {
   def query(l: Int, r: Int): Int = {
 
     def queryUtil(idxS: Int, low: Int, high: Int): Int = {
-      if (r < low || high < l) Int.MaxValue // No Overlap
+      if (low > r || high < l) Int.MaxValue // No Overlap
       else if (low >= l && high <= r) segment(idxS) // Complete Overlap
       else {
         val mid = calcMid(low, high)
