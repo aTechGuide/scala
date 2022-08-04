@@ -1,9 +1,9 @@
 package in.kamranali.company.team.ratelimiting
 
-class TokenBucket(val capacity: Long, refillRate: Long) extends RateLimiting {
+class TokenBucket(capacity: Long, refillRate: Long) extends RateLimiting {
 
-  var availableTokens = capacity
-  var lastRefillTimeStamp = System.currentTimeMillis()
+  private var availableTokens = capacity
+  private var lastRefillTimeStamp = System.currentTimeMillis()
 
   def allowRequest(customerId: Int): Boolean = {
     // Step 1: Try Refilling
