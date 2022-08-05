@@ -1,6 +1,6 @@
-package guide.atech.features.algorithms.rl
+package guide.atech.algorithms.rl
 
-import guide.atech.features.algorithms.rl.data.CustomerLimits
+import guide.atech.algorithms.rl.data.CustomerLimits
 
 /**
  * Created by Siddharth on 2/19/18.

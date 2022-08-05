@@ -1,6 +1,6 @@
-package guide.atech.features.algorithms.rl
+package guide.atech.algorithms.rl
 
-import guide.atech.features.algorithms.rl.data.CustomerLimitsWithCredits
+import guide.atech.algorithms.rl.data.CustomerLimitsWithCredits
 
 class TokenBucketWithCredits(customerDetails: CustomerDetailsWithCredits) extends RateLimiting {
 
