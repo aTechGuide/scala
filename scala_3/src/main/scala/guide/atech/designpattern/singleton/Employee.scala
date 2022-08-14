@@ -4,6 +4,7 @@ class Employee private (val name: String, val age: Int)
 
 object Employee {
 
+  @volatile
   var instance: Option[Employee] = None
 
   def apply(name: String, age: Int): Employee = {
