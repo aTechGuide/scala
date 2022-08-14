@@ -3,10 +3,14 @@ package guide.atech.designpattern.singleton
 object SingletonApp {
 
   def main(args: Array[String]): Unit = {
-    val emp = Employee("kamran", 33)
-    println(s"Emp(name=${emp.name},age=${emp.age})") // Emp(name=kamran,age=33)
 
-    val emp2 = Employee("kamran", 35)
-    println(s"Emp(name=${emp2.name},age=${emp2.age})") // Emp(name=kamran,age=33)
+    val environment = "Some Environment Context1"
+    val environment2 = "Some Environment Context2"
+
+    val appContext = AppContext.getOrCreate(environment)
+    println(s"AppContext(env=${appContext.env})") // AppContext(env=Some Environment Context1)
+
+    val appContext2 = AppContext.getOrCreate(environment2) // [Warning] AppContext is already initialized with env = Some Environment Context1
+    println(s"AppContext(name=${appContext2.env})") // AppContext(name=Some Environment Context1)
   }
 }
