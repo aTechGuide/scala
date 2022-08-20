@@ -19,15 +19,20 @@ class TokenBucket(customerDetails: CustomerDetails) extends RateLimiting {
 
   def allowRequest(customerId: Int): Boolean = customerDetails.memory.get(customerId) match {
     case Some(customer) =>
-      // Step 2: Try Refilling
+      // Step 1: Try Refilling
       refill(customer)
 
-      if (customer.availableTokens > 0) {
-        customer.availableTokens = customer.availableTokens - 1
-        println(s"New limits $customer")
-        true
-      } else false
+      // Step 2: Decrease Tokens
+      decreaseTokens(customer)
     case None => true
+  }
+
+  private def decreaseTokens(customer: CustomerLimits) = {
+    if (customer.availableTokens > 0) {
+      customer.availableTokens = customer.availableTokens - 1
+      println(s"New limits $customer")
+      true
+    } else false
   }
 
   private def refill(customer: CustomerLimits): Unit = {

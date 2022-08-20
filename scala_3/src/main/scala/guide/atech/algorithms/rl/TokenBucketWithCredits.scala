@@ -8,21 +8,26 @@ class TokenBucketWithCredits(customerDetails: CustomerDetailsWithCredits) extend
 
     customerDetails.memoryWithCredits.get(customerId) match {
       case Some(customer) =>
-        // Step 2: Try Refilling
+        // Step 1: Try Refilling
         refill(customer)
 
-        if (customer.availableTokens > 0 || customer.credit > 0) {
-          if (customer.availableTokens > 0) {
-            customer.availableTokens = customer.availableTokens - 1
-          } else if (customer.credit > 0) {
-            customer.credit = customer.credit - 1
-          }
-
-          println(s"New limits $customer")
-          true
-        } else false
+        // Step 2: Decrease Tokens
+        decreaseTokens(customer)
       case None => true
     }
+  }
+
+  private def decreaseTokens(customer: CustomerLimitsWithCredits) = {
+    if (customer.availableTokens > 0 || customer.credit > 0) {
+      if (customer.availableTokens > 0) {
+        customer.availableTokens = customer.availableTokens - 1
+      } else if (customer.credit > 0) {
+        customer.credit = customer.credit - 1
+      }
+
+      println(s"New limits $customer")
+      true
+    } else false
   }
 
   private def refill(customer: CustomerLimitsWithCredits): Unit = {
@@ -32,8 +37,8 @@ class TokenBucketWithCredits(customerDetails: CustomerDetailsWithCredits) extend
 
     if (tokensToBeAdded > 0) {
       val actualAddition = math.min(customer.maxCapacity, customer.availableTokens + tokensToBeAdded).toInt
-
       val residual = tokensToBeAdded - (customer.availableTokens - actualAddition)
+
       customer.availableTokens = actualAddition
       customer.lastRefillTimeStamp = now
 
