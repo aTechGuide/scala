@@ -5,7 +5,7 @@ import guide.atech.algorithms.snakeandladder.models.{BasicBoard, Board, Player}
 import scala.annotation.tailrec
 import scala.collection.mutable
 
-class BasicGameOrchestrator(board: Board, override val players: mutable.Queue[Player]) extends GameOrchestrator[Player](players) {
+class BasicGameOrchestrator(board: Board, val players: mutable.Queue[Player]) extends GameOrchestrator[Player] {
 
   var gameCompleted = false
 
@@ -48,4 +48,7 @@ class BasicGameOrchestrator(board: Board, override val players: mutable.Queue[Pl
   override protected def completeGame(): Unit = {
     gameCompleted = true
   }
+  override protected def getCurrentPlayer: Player = players.dequeue()
+
+  override protected def releaseCurrentPlayer(player: Player): Unit = players.enqueue(player)
 }
