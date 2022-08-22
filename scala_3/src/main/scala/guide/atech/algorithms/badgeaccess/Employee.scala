@@ -24,14 +24,8 @@ object Employee {
     })
   }
 
-  def parseAsTime(str: Int): Int = {
-    var digit = 0
-    var ans = str
-    while (ans > 0) {
-      ans = ans / 10
-      digit = digit + 1
-    }
-
+  private def parseAsTime(str: Int): Int = {
+    val digit = str.toString.length
     val multiplier = 4 - digit
 
     if (multiplier == 0) str
@@ -54,7 +48,7 @@ object Employee {
       val cur  = set.head
 
       val itemParsed = parseAsTime(item)
-      val curParsed = parseAsTime(set.head)
+      val curParsed = parseAsTime(cur)
 
       if (curParsed - itemParsed < 1000) {
         findInterval(item, set, item :: ans , true)
