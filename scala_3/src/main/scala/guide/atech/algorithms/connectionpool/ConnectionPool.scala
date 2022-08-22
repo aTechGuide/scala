@@ -15,5 +15,4 @@ trait ConnectionPool[T] {
   def releaseConnection(connection: T): Unit
 
   def maxConnections: Int
-
 }
