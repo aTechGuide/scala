@@ -15,16 +15,18 @@ import guide.atech.algorithms.rl.data.CustomerLimits
  * - https://www.linkedin.com/pulse/api-rate-limiting-using-token-bucket-algorithm-siddharth-patnaik/
  * - https://www.youtube.com/watch?v=FU4WlwfS3G0
  */
-class TokenBucket(customerDetails: CustomerDetails) extends RateLimiting {
+class TokenBucket(customerDetails: CustomerDetails) extends RateLimiting[Int, Boolean] {
 
-  def allowRequest(customerId: Int): Boolean = customerDetails.memory.get(customerId) match {
-    case Some(customer) =>
-      // Step 1: Try Refilling
-      refill(customer)
+  def allowRequest(customerId: Int): Boolean = this.synchronized {
+    customerDetails.memory.get(customerId) match {
+      case Some(customer) =>
+        // Step 1: Try Refilling
+        refill(customer)
 
-      // Step 2: Decrease Tokens
-      decreaseTokens(customer)
-    case None => true
+        // Step 2: Decrease Tokens
+        decreaseTokens(customer)
+      case None => true
+    }
   }
 
   private def decreaseTokens(customer: CustomerLimits) = {

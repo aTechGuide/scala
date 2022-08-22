@@ -2,7 +2,7 @@ package guide.atech.algorithms.rl
 
 import guide.atech.algorithms.rl.data.CustomerLimitsWithCredits
 
-class TokenBucketWithCredits(customerDetails: CustomerDetailsWithCredits) extends RateLimiting {
+class TokenBucketWithCredits(customerDetails: CustomerDetailsWithCredits) extends RateLimiting[Int, Boolean] {
 
   def allowRequest(customerId: Int): Boolean = {
 

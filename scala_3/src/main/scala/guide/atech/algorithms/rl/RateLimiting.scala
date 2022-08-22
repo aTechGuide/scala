@@ -1,5 +1,5 @@
 package guide.atech.algorithms.rl
 
-trait RateLimiting {
-  def allowRequest(customerId: Int): Boolean
+trait RateLimiting[T, U] {
+  def allowRequest(customerId: T): U
 }
