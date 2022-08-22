@@ -1,13 +1,14 @@
 package guide.atech.algorithms.election
 
-import scala.collection.immutable.TreeMap
+import scala.annotation.tailrec
 
 object Voting {
   def findWinner(votes: Array[String]): String = {
-    import scala.collection.mutable.Map
+    import scala.collection.mutable
 
-    val voteCount = Map.empty[String, Int]
+    val voteCount = mutable.Map.empty[String, Int]
 
+    @tailrec
     def util(idx: Int, ans: String, ansCount: Int): String = {
       if (idx == votes.length) ans
       else {
