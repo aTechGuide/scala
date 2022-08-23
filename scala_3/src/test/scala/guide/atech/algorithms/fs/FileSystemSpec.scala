@@ -1,8 +1,10 @@
 package guide.atech.algorithms.fs
 
+import guide.atech.algorithms.team.fs.MyFile
+
 class FileSystemSpec extends munit.FunSuite {
 
-  import Collection._
+  import guide.atech.algorithms.team.fs.Collection._
   test("size of file is 300") {
 
     val fs = FileSystem()

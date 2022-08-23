@@ -1,7 +1,7 @@
 package guide.atech.algorithms.connectionpool
 
-import guide.atech.algorithms.connectionpool.pools.JDBCConnectionPool
-import guide.atech.algorithms.connectionpool.provider.JDBCConnectionProvider
+import guide.atech.algorithms.team.connectionpool.pools.JDBCConnectionPool
+import guide.atech.algorithms.team.connectionpool.provider.JDBCConnectionProvider
 
 class JDBCConnectionPoolSpec extends munit.FunSuite {
 

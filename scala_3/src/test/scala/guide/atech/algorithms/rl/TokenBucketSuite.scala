@@ -1,6 +1,7 @@
 package guide.atech.algorithms.rl
 
-import guide.atech.algorithms.rl.data.{CustomerLimits, CustomerLimitsWithCredits}
+import guide.atech.algorithms.team.rl.{CustomerDetails, TokenBucket}
+import guide.atech.algorithms.team.rl.data.{CustomerLimits, CustomerLimitsWithCredits}
 
 class TokenBucketSuite extends munit.FunSuite {
 

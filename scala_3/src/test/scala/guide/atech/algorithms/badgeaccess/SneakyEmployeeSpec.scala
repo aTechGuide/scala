@@ -1,5 +1,7 @@
 package guide.atech.algorithms.badgeaccess
 
+import guide.atech.algorithms.team.badgeaccess.Employee
+
 import scala.collection.SortedSet
 
 class SneakyEmployeeSpec extends munit.FunSuite {

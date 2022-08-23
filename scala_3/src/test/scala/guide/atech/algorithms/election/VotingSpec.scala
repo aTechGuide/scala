@@ -1,5 +1,7 @@
 package guide.atech.algorithms.election
 
+import guide.atech.algorithms.team.election.Voting
+
 class VotingSpec extends munit.FunSuite {
 
   test("Winner is B") {
