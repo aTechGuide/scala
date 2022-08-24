@@ -1,6 +1,7 @@
 package guide.atech.algorithms.fs
 
 import guide.atech.algorithms.team.fs.MyFile
+import guide.atech.algorithms.team.fs.FileSystem
 
 class FileSystemSpec extends munit.FunSuite {
 
