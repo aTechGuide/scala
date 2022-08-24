@@ -1,4 +1,4 @@
-package guide.atech.misc
+package guide.atech.algorithms.team.misc
 
 import java.util.concurrent.ThreadLocalRandom
 import scala.util.Random

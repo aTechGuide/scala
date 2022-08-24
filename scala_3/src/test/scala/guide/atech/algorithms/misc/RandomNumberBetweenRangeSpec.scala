@@ -1,6 +1,6 @@
 package guide.atech.algorithms.misc
 
-import guide.atech.misc.RandomNumberBetweenRange
+import guide.atech.algorithms.team.misc.RandomNumberBetweenRange
 
 class RandomNumberBetweenRangeSpec extends munit.FunSuite {
 
