@@ -1,4 +1,4 @@
-package guide.atech.algorithms.cflt
+package guide.atech.algorithms.cflt.functionlibrary
 
 import guide.atech.algorithms.cflt.functionlibrary.BasicFunctionLibrary
 import guide.atech.algorithms.cflt.functionlibrary.model.MyFunction
