@@ -1,4 +1,4 @@
-package guide.atech.algorithms.misc
+package guide.atech.algorithms.team.misc
 
 import guide.atech.algorithms.team.misc.RandomNumberBetweenRange
 
