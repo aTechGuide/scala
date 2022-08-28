@@ -22,10 +22,3 @@ class BasicPatternMatching extends PatternMatching[String, Boolean] {
     util(0, 0, 0, -1)
   }
 }
-
-object BasicPatternMatching {
-  val obj = new BasicPatternMatching()
-  def main(args: Array[String]): Unit = {
-    println(obj.isMatch("aa", "a"))
-  }
-}
