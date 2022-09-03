@@ -7,8 +7,8 @@ class JDBCConnectionPoolSpec extends munit.FunSuite {
 
   test("only one instance of JDBC Connection Pool") {
 
-    val pool1 = JDBCConnectionPool(5, JDBCConnectionProvider)
-    val pool2 = JDBCConnectionPool(10, JDBCConnectionProvider)
+    val pool1 = JDBCConnectionPool(5, new JDBCConnectionProvider("", "", "", ""))
+    val pool2 = JDBCConnectionPool(10, new JDBCConnectionProvider("", "", "", ""))
 
     assertEquals(pool1.connectionPool.maxConnections == 5, true)
     assertEquals(pool2.connectionPool.maxConnections == 5, true)

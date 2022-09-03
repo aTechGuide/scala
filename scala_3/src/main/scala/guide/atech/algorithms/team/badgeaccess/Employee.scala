@@ -22,6 +22,7 @@ object Employee {
       if (interval.isEmpty) acc
       else SneakyEmployee(k, interval) :: acc
     })
+
   }
 
   private def parseAsTime(str: Int): Int = {

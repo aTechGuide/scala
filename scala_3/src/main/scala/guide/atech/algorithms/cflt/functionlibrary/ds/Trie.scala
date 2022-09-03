@@ -50,7 +50,7 @@ class Trie(val value: String) {
         val children = node.children.get(arg)
         children match {
           case Some(child) =>
-            if (child.variadicFunc.nonEmpty && (currentIndex + 1 <= argsLen - 1)) {
+            if (child.variadicFunc.nonEmpty && (currentIndex < argsLen - 1)) {
 
               if (satisfy(child.value, currentIndex + 1)) {
                 ans.addAll(child.variadicFunc)

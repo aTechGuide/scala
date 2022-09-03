@@ -20,14 +20,14 @@ class FixedConnectionPool[T](maxConnection: Int, connectionProvider: ConnectionP
         Success(pool.dequeue)
       } else if (size < maxConnection) {
         size = size + 1
-        connectionProvider.createConnection("", "", "", "")
+        connectionProvider.createConnection()
       } else {
         // we have already created maximum connections
         while (pool.isEmpty && maxTime < System.currentTimeMillis()) {
           this.wait(timeout)
         }
 
-        if (maxTime < System.currentTimeMillis()) {
+        if (System.currentTimeMillis() < maxTime) {
           Success(pool.dequeue)
         } else Failure(new RuntimeException("Timeout"))
 
