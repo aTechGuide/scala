@@ -1,6 +1,6 @@
 package in.kamranali.algorithms.trie
 
-class Trie(val char : Option[Char] = None) {
+class Trie(val char: Char = '/') {
   import scala.annotation.tailrec
   import scala.collection.mutable
 
@@ -17,7 +17,7 @@ class Trie(val char : Option[Char] = None) {
       if (currentIndex == key.length) parentNode.isWord = true // Marking the last inserted Character as a Word
       else {
         val char = key.charAt(currentIndex)
-        val result = parentNode.children.getOrElseUpdate(char, new Trie(Some(char)))
+        val result = parentNode.children.getOrElseUpdate(char, new Trie(char))
 
         appendHelper(currentIndex + 1, result)
       }

@@ -15,39 +15,40 @@ import guide.atech.algorithms.team.rl.data.CustomerLimits
  * - https://www.linkedin.com/pulse/api-rate-limiting-using-token-bucket-algorithm-siddharth-patnaik/
  * - https://www.youtube.com/watch?v=FU4WlwfS3G0
  */
-class TokenBucket(customerDetails: CustomerDetails) extends RateLimiting[Int, Boolean] {
+class TokenBucket(customerDetails: Map[Int, CustomerLimits]) extends RateLimiting[Int, Boolean] {
 
-  def allowRequest(customerId: Int): Boolean = this.synchronized {
-    customerDetails.memory.get(customerId) match {
+  def isAllowed(customerID: Int): Boolean = {
+
+    customerDetails.get(customerID) match
       case Some(customer) =>
-        // Step 1: Try Refilling
-        refill(customer)
 
-        // Step 2: Decrease Tokens
+        // Refill the quota after
+        val now = System.currentTimeMillis()
+        val elapsedInSec = (now - customer.time) / 1000
+        val quotaToAdd = elapsedInSec * customer.rate
+        println(s"Elapsed time in sec = $elapsedInSec and quotaAdded = $quotaToAdd")
+
+        if (quotaToAdd > 0) {
+          // Update quota and time
+          val actualQuota = math.min(customer.rate, customer.quota + quotaToAdd.toInt) // Check
+          customer.quota = actualQuota
+          customer.time = now
+        }
+
+        // decrease the quota (if available)
         decreaseTokens(customer)
-      case None => true
-    }
+      case None => false
   }
 
   private def decreaseTokens(customer: CustomerLimits) = {
-    if (customer.availableTokens > 0) {
-      customer.availableTokens = customer.availableTokens - 1
-      println(s"New limits $customer")
+    if (customer.quota > 0) {
+      println(s"Current Quota ${customer.quota}")
+      customer.quota = customer.quota - 1
+      println(s"Remaining Quota ${customer.quota}")
       true
-    } else false
-  }
-
-  private def refill(customer: CustomerLimits): Unit = {
-    val now = System.currentTimeMillis()
-    val elapsedTime = now - customer.lastRefillTimeStamp
-    val tokensToBeAdded = (elapsedTime / 1000) * customer.refillRate
-
-    if (tokensToBeAdded > 0) {
-      val actualAddition = math.min(customer.maxCapacity, customer.availableTokens + tokensToBeAdded).toInt
-      customer.availableTokens = actualAddition
-      customer.lastRefillTimeStamp = now
-
-      println(s"Tokens to be added = $tokensToBeAdded and actual addition = $actualAddition")
+    } else {
+      println("Insufficient Quota Failing the request")
+      false
     }
   }
 }

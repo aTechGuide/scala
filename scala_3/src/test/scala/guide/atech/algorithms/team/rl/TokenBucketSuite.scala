@@ -1,38 +1,30 @@
 package guide.atech.algorithms.rl
 
-import guide.atech.algorithms.team.rl.{CustomerDetails, TokenBucket}
+import guide.atech.algorithms.team.rl.TokenBucket
 import guide.atech.algorithms.team.rl.data.{CustomerLimits, CustomerLimitsWithCredits}
 
 class TokenBucketSuite extends munit.FunSuite {
 
   test("customer is rate limited correctly") {
+    // c = 1, 2 rps, t=0 quota=2
+    val customerID = 1
+    val rate = 2
+    val initialQuota = 2
 
-    val testData = Map(
-      1 -> CustomerLimits(1, 1, System.currentTimeMillis(), 1, 1)
-    )
-    
-    val customerDetails = new CustomerDetails {
-      override def memory: Map[Int, CustomerLimits] = testData
-    }
-    val tb = new TokenBucket(customerDetails)
+    val customerDetails = Map((customerID, CustomerLimits(customerID, rate, System.currentTimeMillis(), initialQuota)))
+    val rl = TokenBucket(customerDetails)
 
-    (1 to 3).foreach { idx => {
-      if (idx == 1)
-        assertEquals(tb.allowRequest(1),true)
-      else
-        assertEquals(tb.allowRequest(1),false)
-    }}
+    println("First Request")
+    assertEquals(true, rl.isAllowed(customerID))
+    println("Second Request")
+    assertEquals(true, rl.isAllowed(customerID))
+    println("Third Request")
+    assertEquals(false, rl.isAllowed(customerID))
 
-    println("Sleeping for a sec")
+    println("Waiting for 1s to refill the quota")
     Thread.sleep(1000)
-    println("Waking up")
+    assertEquals(true, rl.isAllowed(customerID))
 
-    (1 to 3).foreach { idx => {
-      if (idx == 1)
-        assertEquals(tb.allowRequest(1), true)
-      else
-        assertEquals(tb.allowRequest(1), false)
-    }}
   }
 
 }

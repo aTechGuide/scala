@@ -2,11 +2,11 @@ package guide.atech.algorithms.team.rl
 
 import guide.atech.algorithms.team.rl.data.CustomerLimitsWithCredits
 
-class TokenBucketWithCredits(customerDetails: CustomerDetailsWithCredits) extends RateLimiting[Int, Boolean] {
+class TokenBucketWithCredits(customerDetails: Map[Int, CustomerLimitsWithCredits]) extends RateLimiting[Int, Boolean] {
 
-  def allowRequest(customerId: Int): Boolean = {
+  def isAllowed(customerId: Int): Boolean = {
 
-    customerDetails.memoryWithCredits.get(customerId) match {
+    customerDetails.get(customerId) match {
       case Some(customer) =>
         // Step 1: Try Refilling
         refill(customer)
@@ -18,9 +18,9 @@ class TokenBucketWithCredits(customerDetails: CustomerDetailsWithCredits) extend
   }
 
   private def decreaseTokens(customer: CustomerLimitsWithCredits) = {
-    if (customer.availableTokens > 0 || customer.credit > 0) {
-      if (customer.availableTokens > 0) {
-        customer.availableTokens = customer.availableTokens - 1
+    if (customer.quota > 0 || customer.credit > 0) {
+      if (customer.quota > 0) {
+        customer.quota = customer.quota - 1
       } else if (customer.credit > 0) {
         customer.credit = customer.credit - 1
       }
@@ -32,15 +32,15 @@ class TokenBucketWithCredits(customerDetails: CustomerDetailsWithCredits) extend
 
   private def refill(customer: CustomerLimitsWithCredits): Unit = {
     val now = System.currentTimeMillis()
-    val elapsedTime = now - customer.lastRefillTimeStamp
-    val tokensToBeAdded = (elapsedTime / 1000) * customer.refillRate
+    val elapsedTime = now - customer.time
+    val tokensToBeAdded = (elapsedTime / 1000) * customer.rate
 
     if (tokensToBeAdded > 0) {
-      val actualAddition = math.min(customer.maxCapacity, customer.availableTokens + tokensToBeAdded).toInt
-      val residual = tokensToBeAdded - (customer.availableTokens - actualAddition)
+      val actualAddition = math.min(customer.rate, customer.quota + tokensToBeAdded).toInt
+      val residual = tokensToBeAdded - (customer.quota - actualAddition)
 
-      customer.availableTokens = actualAddition
-      customer.lastRefillTimeStamp = now
+      customer.quota = actualAddition
+      customer.time = now
 
       customer.credit = math.min(customer.maxCredit, customer.credit + residual).toInt
 
