@@ -1,4 +1,4 @@
-package guide.atech.algorithms.rl
+package guide.atech.algorithms.team.rl
 
 import guide.atech.algorithms.team.rl.TokenBucket
 import guide.atech.algorithms.team.rl.data.{CustomerLimits, CustomerLimitsWithCredits}

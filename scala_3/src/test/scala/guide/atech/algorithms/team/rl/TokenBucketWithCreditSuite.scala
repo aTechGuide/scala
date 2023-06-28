@@ -1,4 +1,4 @@
-package guide.atech.algorithms.rl
+package guide.atech.algorithms.team.rl
 
 import guide.atech.algorithms.team.rl.TokenBucketWithCredits
 import guide.atech.algorithms.team.rl.data.{CustomerLimits, CustomerLimitsWithCredits}
@@ -8,8 +8,8 @@ class TokenBucketWithCreditSuite extends munit.FunSuite {
   test("customer is rate limited correctly") {
     val customerID = 1
     val rate = 1
-    val initialQuota = 1
     val time = System.currentTimeMillis()
+    val initialQuota = 1
 
     // (id: Long, rate: Int, var time: Long, var quota: Int, var credit: Int, val maxCredit: Int)
     val customerLimitsWithCredits = Map(
