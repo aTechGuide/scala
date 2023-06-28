@@ -18,7 +18,7 @@ object Voting {
 
         voteCount.put(vote, newCount)
 
-        if (newCount > ansCount) util(idx + 1, vote, ansCount + 1)
+        if (newCount > ansCount) util(idx + 1, vote, newCount)
         else util(idx + 1, ans, ansCount)
       }
     }

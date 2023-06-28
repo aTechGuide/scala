@@ -1,4 +1,4 @@
-package guide.atech.algorithms.election
+package guide.atech.algorithms.team.election
 
 import guide.atech.algorithms.team.election.Voting
 
