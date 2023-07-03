@@ -13,7 +13,7 @@ object RandomNumberBetweenRange {
    *         Ref: https://www.baeldung.com/java-generating-random-numbers-in-range
    */
   def randomNumber(min: Int, max: Int): Int = {
-    min + new Random().nextInt(max - min)
+    min + Random.nextInt(max - min)
   }
 
   // https://stackoverflow.com/questions/363681/how-do-i-generate-random-integers-within-a-specific-range-in-java
