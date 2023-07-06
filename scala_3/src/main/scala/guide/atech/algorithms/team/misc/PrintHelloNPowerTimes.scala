@@ -1,9 +1,7 @@
-package guide.atech.algorithms.team
+package guide.atech.algorithms.team.misc
 
 object PrintHelloNPowerTimes {
-  val toPrint = "hello"
-
-  def myPow(n: Int): Long = {
+  private def myPow(n: Int): Long = {
 
     // Utility Function
     def util(idx: Long): Long = {
@@ -21,7 +19,7 @@ object PrintHelloNPowerTimes {
     else util(n)
   }
 
-  def myPowPrint(n: Int): String = {
+  private def myPowPrint(n: Int, toPrint: String): String = {
 
     // Utility Function
     def util(idx: Long): String = {
@@ -41,7 +39,7 @@ object PrintHelloNPowerTimes {
 
   def main(args: Array[String]): Unit = {
     println(myPow(3))
-    println(myPowPrint(3))
+    println(myPowPrint(3, "hello"))
   }
 
 }

@@ -1,12 +1,13 @@
 package guide.atech.algorithms.team.snakeandladder
 
 import guide.atech.algorithms.team.snakeandladder.models.{BasicBoard, Ladder, Player, Snake}
-import guide.atech.algorithms.team.snakeandladder.service.BasicGameOrchestrator
+import munit.FunSuite
 
 import scala.collection.mutable
 
-object SnakeAndLadderGameDriver {
-  def main(args: Array[String]): Unit = {
+class BasicGameOrchestratorTest extends FunSuite {
+
+  test("The game should be end predictably") {
     val snakes = List(Snake(19, 3))
     val ladders = List(Ladder(5, 15))
 
@@ -25,4 +26,5 @@ object SnakeAndLadderGameDriver {
 
     println(s"Game Ended")
   }
+
 }

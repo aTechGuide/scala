@@ -1,13 +1,14 @@
-package guide.atech.algorithms.team.snakeandladder.service
+package guide.atech.algorithms.team.snakeandladder
 
-import guide.atech.algorithms.team.snakeandladder.models.{BasicBoard, Board, Player}
+import guide.atech.algorithms.team.snakeandladder.models.{BasicBoard, Player}
 
 import scala.annotation.tailrec
 import scala.collection.mutable
+import scala.util.Random
 
-class BasicGameOrchestrator(board: Board, val players: mutable.Queue[Player]) extends GameOrchestrator[Player] {
+class BasicGameOrchestrator(board: BasicBoard, val players: mutable.Queue[Player]) extends GameOrchestrator[Player] {
 
-  var gameCompleted = false
+  private var gameCompleted = false
 
   @tailrec
   private def getNewPositionAfterGoingThroughSnakesAndLadders(position: Int): Int = {
@@ -39,7 +40,7 @@ class BasicGameOrchestrator(board: Board, val players: mutable.Queue[Player]) ex
     println(s"Player ${player.id} rolled and got dice = $move and moved from $oldPosition to $newPosition")
   }
 
-  override protected def rollDice(): Int = DiceService.roll
+  override protected def rollDice(): Int = Random.nextInt(6) + 1
 
   override protected def isPlayerWon(player: Player): Boolean = board.playerPieces(player.id) == board.size
 

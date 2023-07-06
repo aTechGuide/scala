@@ -1,6 +1,7 @@
-package guide.atech.algorithms.team.snakeandladder.service
+package guide.atech.algorithms.team.snakeandladder
 
 import guide.atech.algorithms.team.snakeandladder.models.Player
+
 import scala.collection.mutable
 
 /*

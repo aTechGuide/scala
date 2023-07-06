@@ -12,8 +12,6 @@
 ## Extended
 - Game is continued till only one player is left
 - Two dices are thrown, to get a random number from `2` to `12`
-- 
-
 
 # Reference
 - [Work At Tech](https://workat.tech/machine-coding/editorial/how-to-design-snake-and-ladder-machine-coding-ehskk9c40x2w)
