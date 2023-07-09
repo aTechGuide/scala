@@ -1,5 +1,6 @@
 package guide.atech.algorithms.team.router
 
-trait Router[T] {
-  def router(route: T): Unit
+trait Router {
+  def withRoute(path: String, result: String): Unit
+  def route(path: String): String
 }

@@ -30,10 +30,10 @@ class Trie(val char: Char = '/') {
   def search(word: String): Boolean = {
 
     @tailrec
-    def helper(currentIndex: Int, node: Trie): Boolean = {
-      if (currentIndex == word.length) node.isWord
+    def helper(currentIndex: Int, parentNode: Trie): Boolean = {
+      if (currentIndex == word.length) parentNode.isWord
       else {
-        node.children.get(word.charAt(currentIndex)) match {
+        parentNode.children.get(word.charAt(currentIndex)) match {
           case Some(child) => helper(currentIndex + 1, child)
           case None => false
         }

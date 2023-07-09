@@ -17,9 +17,9 @@ import guide.atech.algorithms.team.rl.data.CustomerLimits
  */
 class TokenBucket(customerDetails: Map[Int, CustomerLimits]) extends RateLimiting[Int, Boolean] {
 
-  def isAllowed(customerID: Int): Boolean = {
+  def isAllowed(customer: Int): Boolean = {
 
-    customerDetails.get(customerID) match
+    customerDetails.get(customer) match
       case Some(customer) =>
 
         // Refill the quota after
