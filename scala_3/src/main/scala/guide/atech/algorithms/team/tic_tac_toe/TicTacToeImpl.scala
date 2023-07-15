@@ -12,7 +12,7 @@ class TicTacToeImpl(boardSize: Int) extends TicTacToe {
   Ref:
     - https://aaronice.gitbook.io/lintcode/data_structure/design-tic-tac-toe#o-n-time-o-n-2-space-solution
 
-  TODO
+  Improvements
     - Ensure we are not overriding moves
     - Ensure game is played fairly e.g. chance is alternating between two players
   */
