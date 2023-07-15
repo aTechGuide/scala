@@ -34,7 +34,10 @@ class Trie(word: String) {
 
     @tailrec
     def searchRec(parent: Trie, curPath: List[String]): String = {
-      if (curPath.isEmpty) parent.value
+      if (curPath.isEmpty) {
+        if (parent.endMarker) parent.value
+        else ""
+      }
       else {
         val cur = curPath.head
 
@@ -56,12 +59,12 @@ class Trie(word: String) {
         val cur = curPath.head
 
         if(cur == "*") {
-          parent.children.foldLeft("")((acc, child) => {
-            val (k, v) = child
-            val ans = searchRec(v, curPath.tail)
-
-            if (ans.nonEmpty) ans
-            else acc
+          parent.children.foldLeft("")((acc, tup) => {
+            if(acc.nonEmpty) acc // found answer already
+            else {
+              val (k, child) = tup
+              searchRec(child, curPath.tail)
+            }
           })
         } else {
           parent.children.get(cur) match

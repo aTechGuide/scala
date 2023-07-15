@@ -10,19 +10,19 @@ class TokenBucketWithCredits(customerDetails: Map[Int, CustomerLimitsWithCredits
       case Some(customer) =>
         // Step 1: Try Refilling
         val now = System.currentTimeMillis()
-        val elapsedTimeInSec = (now - customer.time) / 1000
-        val tokensToBeAdded = elapsedTimeInSec * customer.rate
+        val elapsedInSec = (now - customer.time) / 1000
+        val quotaToAdd = elapsedInSec * customer.rate
 
-        if (tokensToBeAdded > 0) {
-          val actualAddition = math.min(customer.rate, customer.quota + tokensToBeAdded).toInt
-          val residual = tokensToBeAdded - (customer.quota - actualAddition) // This is new and has to be calculated here
+        if (quotaToAdd > 0) {
+          val actualQuota = math.min(customer.rate, customer.quota + quotaToAdd).toInt
+          val residual = quotaToAdd - (customer.quota - actualQuota) // This is new and has to be calculated here
 
-          customer.quota = actualAddition
+          customer.quota = actualQuota
           customer.time = now
 
           customer.credit = math.min(customer.maxCredit, customer.credit + residual).toInt
 
-          println(s"Tokens to be added = $tokensToBeAdded and actual addition = $actualAddition")
+          println(s"Tokens to be added = $quotaToAdd and actual addition = $actualQuota")
         }
 
         // Step 2: Decrease Tokens

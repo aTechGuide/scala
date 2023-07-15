@@ -11,7 +11,7 @@ class TrieRouter extends Router {
   }
 
   override def route(path: String): String = this.synchronized {
-    //state.search(path)
-    state.searchWithWildcard(path)
+    if (path.contains("*")) state.searchWithWildcard(path)
+    else state.search(path)
   }
 }

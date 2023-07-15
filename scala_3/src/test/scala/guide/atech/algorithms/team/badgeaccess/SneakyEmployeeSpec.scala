@@ -36,6 +36,7 @@ class SneakyEmployeeSpec extends munit.FunSuite {
       Correct = Amos
     */
     //println(data.map(d => Employee.convertDate(d(1))).toList.sorted)
+    // 500 can't compare it back
     val ans = Employee.findSneaky(data)
     ans.foreach { item => {
       println(s"$item")

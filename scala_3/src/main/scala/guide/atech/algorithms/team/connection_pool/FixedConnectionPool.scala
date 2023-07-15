@@ -10,18 +10,14 @@ class FixedConnectionPool[T, P <: ConnectionProvider[T]](limit: Int, provider: P
   private var loanedConnection = 0
 
   override def getConnection: Try[T] =
-    if (loanedConnection == limit) Failure(new LimitExceededException("Maximum Connection Loaned"))
-    else if (pool.nonEmpty) {
-      this.synchronized {
-        Success(pool.dequeue())
-      }
-    }
-    else {
-      this.synchronized {
-        loanedConnection = loanedConnection + 1
-        provider.createConnection
-      }
-    }
+    if (pool.nonEmpty) {
+      Success(pool.dequeue)
+    } else if (loanedConnection < limit) {
+      // handle case when there is a possibility to create new connection
+      loanedConnection = loanedConnection + 1
+      provider.createConnection
+    } else Failure(new LimitExceededException("Maximum Connection Loaned"))
+
 
 
   override def releaseConnection(connection: T): Unit = this.synchronized {
